@@ -1,0 +1,6 @@
+Log/*.Log
+Log/*.json
+Product/Log/*.Log
+Product/Log/*.json
+attachment/*.pdf
+*.bak

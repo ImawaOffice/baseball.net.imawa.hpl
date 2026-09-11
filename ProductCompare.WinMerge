@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<paths>
+		<left>E:\www\imawa\net\hpl\baseball</left>
+		<right>E:\www\imawa\net\hpl\baseball\product</right>
+		<filter>*.*</filter>
+		<subfolders>1</subfolders>
+		<left-readonly>0</left-readonly>
+		<right-readonly>1</right-readonly>
+	</paths>
+</project>

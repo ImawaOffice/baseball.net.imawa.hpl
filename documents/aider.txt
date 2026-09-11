@@ -1,0 +1,185 @@
+AIzaSyDS_GoqaSOOosXYnuVTitu8NhdsYkOk4vs
+export GEMINI_API_KEY="AIzaSyDS_GoqaSOOosXYnuVTitu8NhdsYkOk4vs"
+
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
+  -H 'Content-Type: application/json' \
+  -H 'X-goog-api-key: AIzaSyDS_GoqaSOOosXYnuVTitu8NhdsYkOk4vs' \
+  -X POST \
+  -d '{
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Explain how AI works in a few words"
+          }
+        ]
+      }
+    ]
+  }'
+  
+  
+API キーの詳細
+API キー
+AIzaSyDS_GoqaSOOosXYnuVTitu8NhdsYkOk4vs
+名前
+Gemini API Key
+プロジェクト名
+projects/722724184950
+プロジェクト番号
+722724184950
+
+
+
+echo 'export GEMINI_API_KEY="AIzaSyDS_GoqaSOOosXYnuVTitu8NhdsYkOk4vs"' >> ~/.bashrc
+source ~/.bashrc
+
+
+cd /mnt/e/www/imawa/net/hpl/baseball
+aider --model gemini/gemini-flash-latest --subtree-only .
+
+
+git config --global user.name "ImawaOffice"
+git config --global user.email "office@imawa.net"
+
+
+このフォルダ配下のコードを解析し、以下を重点的にバグ検出してください。
+
+1. PHP の構文エラー、未定義変数、未定義関数
+2. Javascript の構文エラー、未定義変数、未定義関数
+3. HTML の構文エラー、未定義変数、未定義関数
+4. CSS の構文エラー、未定義変数、未定義関数
+5. SQLite3 のクエリの誤り、SQL インジェクションの可能性
+6. MySQL のクエリの誤り、SQL インジェクションの可能性
+7. ファイル間の依存関係の不整合（include/require の不足）
+8. POST/GET パラメータの未チェックやバリデーション不足
+9. SESSION パラメータの未チェックやバリデーション不足
+10. 予期しない null、未初期化変数、型の不一致
+11. ロジックの破綻（勝敗処理、トーナメント進行、配列操作など）
+12. セッション管理の問題（未開始、未チェック、セキュリティ）
+13. エラー処理が不足している箇所
+14. 古い PHPMailer や外部ライブラリの呼び出しミス
+15. 不要なコード、重複コード、改善可能な箇所
+
+重要：
+- 修正は Git パッチ形式で提案してください。
+- 修正理由を簡潔に説明してください。
+- 影響範囲が広い場合は、まず提案だけ行い、私の確認を待ってください。
+- baseball フォルダ以外のファイルは解析しないでください。
+
+まずは「重大なバグ」から順に報告してください。
+
+
+このファイルのバグをすべて検出し、修正案を出してください。
+重大度の高いものから順にお願いします。
+
+
+これらのファイル間の依存関係とロジックの整合性を確認し、矛盾やバグがあれば指摘してください。
+
+この機能のテストケースを生成し、想定されるバグを洗い出してください。
+
+
+
+
+
+
+
+以下の方針に従って、baseball フォルダのバグを検出し、自動修正を行ってください。
+
+【修正方針】
+1. 重大なバグ（エラー・例外・致命的ロジック破綻）を最優先で修正する
+2. 修正は必ず Git パッチ形式で出力する
+3. 修正理由を簡潔に説明する
+4. 影響範囲が広い変更は、まず提案だけ行い、私の確認を待つ
+5. baseball フォルダ以外のファイルは対象外（.aiderignore に従う）
+6. Log と PHPMailer は解析対象外
+7. コードの意図が不明な場合は、修正前に質問する
+
+【PHP（SQLite / MySQL）重点チェック項目】
+- PHP の構文エラー、未定義変数、未定義関数
+- SQLite3 クエリの誤り、SQL インジェクションの可能性
+- MySQL クエリの誤り、接続エラー、戻り値未チェック
+- SQLite と MySQL の両方を使う箇所の整合性（データ型・戻り値）
+- include/require の不足やファイル依存関係の不整合
+- POST/GET パラメータの未チェック、バリデーション不足
+- null や未初期化変数による警告・エラー
+- トーナメント進行ロジックの破綻（勝敗処理、bye、進行順）
+- セッション管理の問題（未開始、未チェック、セキュリティ）
+- エラー処理不足（例外未処理、戻り値未チェック）
+- 外部ライブラリ呼び出しの誤り
+
+【JavaScript 重点チェック項目】
+- 変数のスコープ問題（var / let / const）
+- 未定義変数・未定義関数の使用
+- DOM 操作の null チェック不足
+- イベントリスナーの重複登録
+- 非同期処理（fetch / async / await）のエラーハンドリング不足
+- JSON パースエラー、API レスポンス未チェック
+- ループや条件分岐のロジック破綻
+- クロスブラウザ問題（特に Edge / Chrome）
+- 不要な console.log やデバッグコード
+- セキュリティ（XSS、入力値の未サニタイズ）
+
+【出力形式】
+- まず検出したバグ一覧を「重大度順」で提示
+- 続いて、修正可能なものは Git パッチ形式で修正案を提示
+- 大規模修正は提案のみ行い、私の承認後にパッチを生成する
+
+まずはbaseball フォルダを解析し、重大なバグから順に報告してください。
+
+
+
+GitHub Copilot向け
+
+あなたは PHP（SQLite / MySQL）と JavaScript を扱う高度なコードレビューア兼バグ修正エンジンです。
+以下の方針に従って、baseball/ フォルダ内のコードのみを解析し、重大なバグから順に報告してください。
+
+【対象ファイル】
+1. baseball/ フォルダ内のファイルを対象とする
+2. baseball/product/ フォルダは対象外
+3. baseball/log/ フォルダは対象外
+4. baseball/documents/ フォルダは対象外
+5. baseball/attachment/ フォルダは対象外
+6. baseball/images/ フォルダは対象外
+7. baseball/PHPMailer/ フォルダは対象外
+
+【解析・修正方針】
+1. 最初の出力では「バグ一覧（重大度順）」のみ提示し、まだ修正は行わない
+2. 修正が必要な場合は、私の指示後に「diff（Git パッチ形式）」で修正案を提示する
+3. 影響範囲が広い変更は、必ず提案のみ行い、私の承認を待つ
+4. コードの意図が不明な場合は、修正前に質問する
+5. コードを保守観点から最適化する記載方法があれば提案する
+
+【PHP（SQLite / MySQL）重点チェック項目】
+- PHP の構文エラー、未定義変数、未定義関数
+- SQLite3 クエリの誤り、SQL インジェクションの可能性
+- MySQL クエリの誤り、接続エラー、戻り値未チェック
+- SQLite と MySQL の整合性（データ型・戻り値・NULL 取り扱い）
+- include/require の不足、ファイル依存関係の不整合
+- POST/GET パラメータの未チェック、バリデーション不足
+- null や未初期化変数による警告・エラー
+- トーナメント進行ロジックの破綻（勝敗処理、bye、進行順）
+- セッション管理の問題（未開始、未チェック、セキュリティ）
+- エラー処理不足（例外未処理、戻り値未チェック）
+- 外部ライブラリ呼び出しの誤り
+- 可読性を高めるためにSQL文は文字列結合で見やすく記述する
+- 可読性を高めるために配列の代入は複数行で記述する
+
+【JavaScript 重点チェック項目】
+- 変数スコープ（var / let / const）の誤り
+- 未定義変数・未定義関数の使用
+- DOM 操作の null チェック不足
+- イベントリスナーの重複登録
+- 非同期処理（fetch / async / await）のエラーハンドリング不足
+- JSON パースエラー、API レスポンス未チェック
+- ループや条件分岐のロジック破綻
+- クロスブラウザ問題（特に Edge / Chrome）
+- 不要な console.log やデバッグコード
+- セキュリティ（XSS、入力値未サニタイズ）
+
+【出力形式】
+1. まず「重大度順のバグ一覧」を提示する（修正はまだ行わない）
+2. 私が「修正して」と指示した項目のみ、diff（Git パッチ形式）で修正案を提示する
+3. 大規模修正は提案のみ行い、承認後にパッチを生成する
+4. 保守観点からコードを最適化する記載方法があれば提案する
+
+まずは baseball/ フォルダを解析し、重大なバグから順に報告してください。

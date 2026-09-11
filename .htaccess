@@ -1,0 +1,22 @@
+<Files ~ "^\.(htaccess|htpasswd)$">
+deny from all
+</Files>
+Options -Indexes
+DirectoryIndex index.php
+order deny,allow
+
+RewriteEngine On
+
+# 1. 既存のファイル（.php含む）はそのまま
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 2. 入力されたファイル名+.phpが存在する場合は .php を付けて実行
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# 3. それ以外は index.php（index.php自身は除外）
+RewriteCond %{REQUEST_URI} !^/index\.php$
+RewriteRule ^(.+)$ index.php [L]

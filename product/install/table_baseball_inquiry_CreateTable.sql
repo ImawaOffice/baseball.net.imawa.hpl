@@ -1,0 +1,15 @@
+-- mySQL用テーブル作成スクリプト
+-- baseball_inquiry テーブル作成
+CREATE TABLE IF NOT EXISTS `baseball_inquiry` (
+  `inquiry_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `inquiry_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `name` VARCHAR(255) NOT NULL,
+  `phone` VARCHAR(255) NULL,
+  `email` VARCHAR(255) NULL,
+  `message` TEXT NOT NULL,
+  `is_enabled` INT NOT NULL DEFAULT 0,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(255) NULL,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` VARCHAR(255) NULL
+);

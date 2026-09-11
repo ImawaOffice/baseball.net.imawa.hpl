@@ -1,0 +1,25 @@
+/* 
+* ©2017 OmyuTech. ALL RIGHTS RESERVED.
+*/
+
+$.ajaxSettings.async = false;
+$.ajaxSettings.cache = false;
+
+$(document).ready(function() {
+	var pageId = $("#vp-page").val();
+	var key = $("#vp-key").val();
+	if (pageId != null && pageId != undefined && pageId !== "") {
+        countPageViewTimes(pageId + '-' + key);
+	}
+});
+
+function countPageViewTimes(obj) {
+	if (obj === "") {
+		return;
+	}
+	$.ajaxSettings.async = false;
+	$.ajaxSettings.cache = false;
+	$.getJSON('https://baseball.omyutech.com/json/countPageViewTimes.action',
+		{url: obj}, function(data){}
+	);
+}

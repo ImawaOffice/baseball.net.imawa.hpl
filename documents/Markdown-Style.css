@@ -1,0 +1,250 @@
+h1 {
+	font-size: 2rem;
+	border-bottom: 16px ridge black;
+}
+h2{
+	font-size: 1.8rem;
+	background-color: cyan;
+	border-bottom: 8px double black;
+}
+h3{
+	font-size: 1.6rem;
+	border-bottom: 4px solid black;
+	margin-bottom: 16px;
+}
+h4{
+	font-size: 1.4rem;
+	border-bottom: 2px solid black;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+h5{
+	font-size: 1.3rem;
+	border-bottom: 1px solid black;
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+h6{
+	font-size: 1.2rem;
+	border-bottom: 0.5px solid black;
+}
+p{
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+table{
+	border-collapse: collapse;
+	border: solid 2px black;
+}
+table th {
+	border: solid 1px black;
+	background-color: #cccccc;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+table td {
+	border: solid 1px black !important;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+img {
+	max-width: 100%;
+}
+#backToTop {
+	position: fixed; /* 画面に固定 */
+	bottom: 20px; /* 下からの距離 */
+	right: 20px; /* 右からの距離 */
+	width: 50px; /* 幅 */
+	height: 50px; /* 高さ */
+	background-color: #003a75; /* ボタンの背景色 */
+	color: white; /* 文字色 */
+	border-radius: 50%; /* 丸みを持たせる */
+	text-align: center; /* 中央揃え */
+	line-height: 50px; /* 縦中央揃え */
+	opacity: 0.7; /* 透明度 */
+	transition: opacity 0.3s; /* ホバー時の効果 */
+}
+#backToTop:hover {
+	opacity: 1; /* ホバー時の透明度を変更 */
+}
+
+@media print{
+	
+	/* ページ設定 */
+	@page {
+		size: A4 landscape;
+		margin: 1.5cm 0.5cm 1.0cm 1.0cm;
+
+		@top-left {
+			content: var( --pageHeaderTitle, "page-header" );
+			font-size: 8pt;
+			color: #444;
+			padding-top: 1.0cm;
+		}
+
+		@bottom-left {
+			content: var( --pageFooterDate, "page-footer-Date" );
+			font-size: 8pt;
+			color: #666;
+		}
+	
+		@bottom-center{
+			--pageFooterAuthor: "page-footer-Author";
+			content: var( --pageFooterAuthor );
+			font-size: 8pt;
+			color: #666;
+		}
+		
+		@bottom-right {
+			content: counter(page) " / " counter(pages);
+			font-size: 8pt;
+			color: #666;
+		}
+	}
+
+	/* 基本設定 */
+	body {
+		font-family: "メイリオ", "Meiryo", "MS Pゴシック", "MS PGothic", sans-serif !important;
+		font-size: 13px;
+		line-height: 1.55;
+		max-width: none;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+	}
+
+	/* H1 - センタリング、下に細い線 */
+	h1 {
+		text-align: center;
+		font-size: 26px;
+		letter-spacing: 3px;
+		font-weight: bold;
+		margin: 120px 0 120px 0;
+		border-bottom: 1px solid #ddd;
+		border-top: none;
+		padding-bottom: 8px;
+		padding-top: 0;
+		break-after: page;
+	}
+
+	/* H2 - 左寄せ、下のみに細い線 */
+	h2 {
+		text-align: left;
+		font-weight: bold;
+		font-size: 20px;
+		background-color: transparent;
+		margin: 20px 0 10px 0;
+		border: none;
+		border-bottom: 4px double #444;
+		padding-top: 4px;
+		padding-bottom: 2px;
+		padding-left: 6px;
+		break-before: page;
+	}
+
+	/* H3 */
+	h3{
+		font-size: 18px;
+		text-align: left;
+		font-weight: bold;
+		margin: 16px 0 8px 0;
+		border: none;
+		border-bottom: 2px solid #444;
+		padding-top: 0;
+		padding-bottom: 2px;
+		padding-left: 6px;
+	}
+
+	/* H4 */
+	h4{
+		font-size: 16px;
+		text-align: left;
+		font-weight: bold;
+		margin: 12px 0 6px 0;
+		border: none;
+		padding-top: 0;
+		padding-bottom: 2px;
+		padding-left: 6px;
+	}
+
+
+/* H3以下 */
+h3, h4, h5, h6 {
+    text-align: left;
+    font-weight: bold;
+    margin: 15px 0 8px 0;
+    border: none;
+    padding-top: 0;
+}
+
+h5{
+	font-size: 15px;
+}
+
+h6{
+	font-size: 14px;
+}
+/* 段落 */
+p {
+    margin: 6px 0;
+    line-height: 1.5;
+}
+
+	/* 2段組み */
+	.column2 {
+		column-count: 2; /* 2段組に設定 */
+		column-gap: 24px; /* 段間のスペースを24pxに設定 */
+		column-rule: 1px solid #ccc; /* 1pxの薄いグレーの罫線を設定 */
+		/* break-inside: avoid; */
+		/* column-span: all;  見出しを段組み全体にまたがらせる */
+	}
+
+/* 個人情報の下線 */
+.info-line {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-bottom: 8px;
+}
+
+/* 表のスタイル */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 13px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+/* 最初の列のみ改行を許可 */
+td:first-child {
+    white-space: normal;
+}
+
+th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+/* 区切り線を非表示（ブラウザ出力に合わせる） */
+hr {
+    display: none;
+}
+
+/* 改ページ用のスタイル */
+.page-break {
+    page-break-before: always;
+}
+}

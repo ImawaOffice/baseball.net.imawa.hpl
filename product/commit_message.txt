@@ -1,0 +1,33 @@
+Release 2026.04.05 試合結果登録
+
+- 変更
+  - baseball/baseball.css
+    - クラスの追加等
+  - baseball/Class_Database.php
+    - Excecuteの戻り値変更（True　⇒　件数）
+  - baseball/baseball_function.php
+    - 試合登録に関する関数追加
+  - baseball/tournamentresults.php
+    - 試合結果の修正
+  - baseball/article_tournament-results.php
+    - 試合結果の修正
+  - baseball/install/install.php
+    - baseball_gameの追加
+  - baseball/install/table_baseball_tournament_createTable.sql
+    - 親大会ID追加
+  - baseball/install/table_menu_insertTable_develop.sql
+    - 権限レベル見直し
+  - baseball/install/table_menu_insertTable_production.sql
+    - 権限レベル見直し
+
+- 追加
+  - baseball/gamemaintenance.php
+    - 試合結果登録追加
+  - baseball/article_gamemaintenance.php
+    - 試合結果登録追加
+  - baseball/gamematch.php
+    - 試合登録追加
+  - baseball/article_gamematch.php
+    - 試合登録追加
+  - baseball/install/table_baseball_game_CreateTable.sql
+    - 試合テーブル定義を追加

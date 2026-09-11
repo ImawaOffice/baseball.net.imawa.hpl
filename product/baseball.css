@@ -1,0 +1,591 @@
+/* =========================================================
+ * 	全要素のリセット
+ * ========================================================= */
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+/* =========================================================
+ * 	レイアウト全体の設定
+ * ========================================================= */
+body {
+	width: 100%;
+	height: 100%;
+	line-height: 1.5; /* 基本の行間 */
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+/* =========================================================
+ * 	フォームのスタイル
+ * ========================================================= */
+form input[ type="text" ],
+form input[ type="number" ],
+form input[ type="email" ],
+form input[ type="tel" ],
+form input[ type="password" ],
+form textarea {
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+form input[ required ],
+form textarea[ required ] {
+	background-color: rgb(235, 236, 210);
+}
+
+form input[ readonly ],
+form textarea[ readonly ] {
+	background-color: rgb(188, 196, 194);
+}
+
+form .errMsg {
+	color: red;
+	margin-bottom: 12px;
+}
+
+form .form-group {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+form .form-group label {
+	width: 40%;
+	text-align: right;
+	padding-right: 8px;
+}
+
+form .form-group input[ type="text" ],
+form .form-group input[ type="email" ],
+form .form-group input[ type="tel" ],
+form .form-group input[ type="password" ],
+form .form-group textarea {
+	width: 60%;
+}
+
+form .form-group button {
+	width: 60%;
+	padding: 8px 16px;
+	background-color: #007BFF;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+form .page-navi {
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 2px;
+	margin-bottom: 12px;
+}
+
+form .page-navi button {
+	padding: 4px 8px;
+	background-color: #007BFF;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+/* =========================================================
+ * 	コンテナのスタイル
+ * ========================================================= */
+.container {
+	width: 80%;
+	margin: 0 auto;
+}
+
+/* =========================================================
+ * 	ヘッダーのスタイル
+ * ========================================================= */
+ header.page-header {
+	background: #444;
+	color: #fff;
+}
+
+/* =========================================================
+ * 	メインのスタイル
+ * ========================================================= */
+main.page-main {
+	flex: 1 0 auto;
+}
+
+main.page-main h2 {
+	margin-top: 24px;
+	margin-bottom: 24px;
+	text-align: center;
+}
+
+.page-main-content {
+	width: 100%;
+}
+
+.page-main-content img {
+	max-width: 100%;
+	width: 100%;
+	height: auto;
+}
+
+/* =========================================================
+ * 	ナビゲーションメニューのスタイル
+ * ========================================================= */
+.nav-menu{
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 0 1em;
+	margin: 0;
+	padding: 0;
+}
+
+.nav-menu li{
+	list-style: none;
+}
+
+.nav-menu > li {
+	position: relative;
+}
+
+.nav-menu a {
+	color: #fff;
+	text-decoration: none;
+	padding: 0.5em 1em;
+	display: block;
+}
+
+.dropdown-menu {
+	display: none;
+	position: absolute;
+	left: 0;
+	top: 100%;
+	background: #333;
+	min-width: 160px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+	z-index: 100;
+}
+
+.dropdown-menu li a {
+	padding: 0.5em 1em;
+	color: #fff;
+}
+
+.dropdown:hover > .dropdown-menu {
+	display: block;
+}
+
+.dropdown-toggle::after {
+	content: '';
+}
+
+.dropdown-menu li a:hover {
+	background: #444;
+}
+
+/* ハンバーガーメニュー用 */
+.nav-toggle {
+	display: none;
+	position: fixed;
+	margin-left: 12px;
+	z-index: 2000;
+	width: 40px;
+	height: 40px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	position: relative;
+}
+
+.nav-toggle span {
+	display: block;
+	position: absolute;
+	width: 28px;
+	height: 4px;
+	background: #fff;
+	border-radius: 2px;
+	transition: 0.3s;
+	top: 18px;
+	left: 6px;
+}
+.nav-toggle span::before,
+.nav-toggle span::after {
+	content: '';
+	display: block;
+	position: absolute;
+	width: 28px;
+	height: 4px;
+	background: #fff;
+	border-radius: 2px;
+	transition: 0.3s;
+	left: 0;
+}
+.nav-toggle span::before {
+	top: -10px;
+}
+.nav-toggle span::after {
+	top: 10px;
+}
+
+@media ( max-width: 900px ) {
+	.nav-menu {
+	justify-content: flex-start;
+		flex-direction: column;
+		align-items: flex-start;
+		position: fixed;
+		left: -100vw;
+		top: 0;
+		width: 50vw;
+		height: 100vh;
+		background: #222;
+		padding-top: 60px;
+		transition: left 0.3s;
+		z-index: 1000;
+	}
+	.nav-menu li {
+		margin-left: 12px;
+	}
+	.nav-menu.open {
+		left: 0;
+	}
+	.nav-toggle {
+		display: block;
+	}
+}
+
+/* =========================================================
+ * 	フッターのスタイル
+ * ========================================================= */
+footer.page-footer {
+	text-align: center;
+	margin-top: 24px;;
+}
+
+footer .footer-nav{
+	padding: 8px 0;
+	background: #ccc;
+	color: #fff;
+}
+footer .footer-nav ul{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 4px 8px;
+}
+
+footer .footer-nav li{
+	flex: 1 1 auto;
+	list-style: none;
+	text-align: center;
+	margin: 4px 0;
+}
+
+/* =========================================================
+ * 	お知らせのスタイル
+ * ========================================================= */
+.information{
+	text-align: center;
+	padding-top: 24px;
+}
+
+.information-content {
+	text-align: left;
+	margin-top: 20px;
+}
+
+dl.information-list {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+dt.information-date {
+	width: 120px;
+	flex-shrink: 0;	/* 幅を縮めない */
+}
+
+dd.information-title {
+	flex-grow: 1;	/* 残りの幅を全て使う */
+	margin-bottom: 12px;
+}
+
+/* =========================================================
+ * 	SNSのスタイル
+ * ========================================================= */
+.social-media{
+	text-align: center;
+}
+
+.social-media-content {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.social-icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 28px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.social-icons a.facebook { background: #3b5998; }
+.social-icons a.twitter { background: #000; } /* Xは黒 */
+.social-icons a.instagram { background: #e1306c; }
+.social-icons a.line { background: #07b53b; }
+
+.social-icons a:hover {
+  opacity: 0.8;
+}
+
+/* =========================================================
+ * 	スポンサーのスタイル
+ * ========================================================= */
+.sponsor{
+	text-align: center;
+	padding-top: 24px;
+}
+
+.sponsor-content {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.sponsor-icons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+ * 	過去大会のスタイル
+ * ========================================================= */
+.past-tournament{
+	text-align: center;
+	padding-top: 24px;
+}
+
+.past-tournament-content {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.past-tournament-icons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* =========================================================
+ * 	試合規定のスタイル
+ * ========================================================= */
+.game-rules{
+	text-align: center;
+	padding-top: 24px;
+}
+.game-rules-content {
+	text-align: left;
+	margin-top: 20px;
+}
+.game-rules-content ul li {
+	list-style-type: decimal;
+	margin-top: 12px;
+	margin-bottom: 8px;
+	text-indent: 0px;
+	padding-left: 8px;
+}
+.game-rules-content ul li p {
+	margin-bottom: 4px;
+}
+
+/* =========================================================
+ * 	大会規定のスタイル
+ * ========================================================= */
+.tournament-rules{
+	text-align: center;
+	padding-top: 24px;
+}
+.tournament-rules-content {
+	text-align: left;
+	margin-top: 20px;
+}
+.tournament-rules-content ul li {
+	list-style-type: decimal;
+	margin-top: 12px;
+	margin-bottom: 8px;
+	text-indent: 0px;
+	padding-left: 8px;
+}
+.tournament-rules-content ul li p {
+	margin-bottom: 4px;
+}
+
+/* =========================================================
+ * 	大会概要のスタイル
+ * ========================================================= */
+.tournament-overview{
+	text-align: center;
+	padding-top: 24px;
+}
+
+.tournament-overview-content {
+	text-align: left;
+	margin-top: 20px;
+}
+
+.tournament-overview-content table {
+  border-collapse: collapse;
+}
+
+.tournament-overview-content table th, td {
+	border: 1px solid #000;
+	padding: 8px;
+}
+
+.tournament-overview-content th {
+	text-align-last: justify;
+	white-space: nowrap;
+	background-color: #007BFF;
+	color: #fff;
+}
+
+.tournament-overview-content table ul li {
+  list-style: none;
+}
+
+/* =========================================================
+ * 	試合結果のスタイル
+ * ========================================================= */
+.tournament-results{
+	text-align: center;
+	padding-top: 24px;
+}
+.tournament-results-content {
+	text-align: center;
+	margin-top: 20px;
+}
+
+/* =========================================================
+ * 	サインアップのスタイル
+ * ========================================================= */
+.signup-container {
+	width: 80%;
+	margin: 0 auto;
+}
+
+.signup-step ul {
+	list-style: none;
+	margin-bottom: 24px;
+}
+
+
+/* =========================================================
+ * 	共通のスタイル
+ * ========================================================= */
+.indent-1 {
+	text-indent: -1em;
+	padding-left: 1em;
+}
+
+.indent-3 {
+	text-indent: -3em;
+	padding-left: 3em;
+}
+
+.table{
+	width: 100%;
+	border-collapse: collapse;
+}
+.table th, .table td {
+	border: 1px solid #000;
+	padding: 8px;
+}
+
+.dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.dialog::backdrop {
+  background: rgba(0,0,0,0.4);
+}
+
+.dialogTable {
+	border-collapse: collapse;
+}
+
+.dialogTable th, .dialogTable td {
+	border: 1px solid #000;
+	padding: 8px;
+}
+
+.dialogTable th {
+	text-align: left;
+	background-color: #007BFF;
+	color: #fff;
+}
+
+.detail_button {
+	padding: 4px 8px;
+	background-color: #007BFF;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.delete_button {
+	padding: 4px 8px;
+	background-color: #FF0000;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.display_none {
+	display: none;
+}
+
+.display_show {
+	display: block;
+}
+
+.tournamentForm {
+	display: none;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.maintenanceForm {
+	display: none;
+}

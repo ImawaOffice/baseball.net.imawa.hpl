@@ -1,0 +1,11 @@
+Relase 2026.08.04 TOPページの大会概要／大会規定文言修正
+
+- 変更
+  - baseball/index.php
+    文言修正：大会規定　→　大会概要、試合規定　→　大会規定
+  - baseball/tournamentoverview.php
+    大会規定(article_tournament-rules.php)の読込追加
+  - baseball/article_tournament-overview.php
+	大会概要ファイルの呼出し変更
+  - baseball/article_tournament-rules.php
+	大会規定ファイルの呼出し変更

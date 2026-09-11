@@ -1,0 +1,108 @@
+// 360px 未満 viewport固定 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+!(function () {
+  const viewport = document.querySelector('meta[name="viewport"]');
+  function switchViewport() {
+    const value =
+      window.outerWidth > 360
+        ? 'width=device-width,initial-scale=1'
+        : 'width=360';
+    if (viewport.getAttribute('content') !== value) {
+      viewport.setAttribute('content', value);
+    }
+  }
+  addEventListener('resize', switchViewport, false);
+  switchViewport();
+})();
+
+
+// page scroll //////////////////////////////////////////////////////////////////////////////////////////////////
+$(function(){
+
+   $('a[href^=#]').click(function() {
+      // speed
+      var speed = 500;
+      var href= $(this).attr("href");
+      var target = $(href == "#" || href == "" ? 'html' : href);
+      var position = target.offset().top;
+      $($.browser.safari ? 'body' : 'html').animate({scrollTop:position}, speed, 'swing');
+      return false;
+   });
+});
+
+// pagetop //////////////////////////////////////////////////////////////////////////////////////////////////
+$(function(){
+	var pageTop = $("#pagetopBtn");
+	pageTop.click(function () {
+  	$('body, html').animate({ scrollTop: 0 }, 300);
+  	return false;
+  });
+	$(window).scroll(function () {
+		if($(this).scrollTop() >= 200) {
+			pageTop.css( "transform", "rotateY(0deg)" );
+		} else {
+		  pageTop.css( "transform", "rotateY(270deg)" );
+		}
+	});
+});
+
+
+// SP TELlink //////////////////////////////////////////////////////////////////////////////////////////////////
+$(function(){
+  var device = navigator.userAgent;
+  if((device.indexOf('iPhone') > 0 && device.indexOf('iPad') == -1) || device.indexOf('iPod') > 0 || device.indexOf('Android') > 0){
+    $(".tel").wrap('<a href="tel:08031796077"></a>');
+  }
+});
+
+
+// jQuery.rollover ///////////////////////////////////////////////////////////////////////////////////////////////
+jQuery(document).ready(function($) {
+
+    //タッチデバイス以外
+    if(!navigator.userAgent.match(/(iPhone|iPad|Android)/)){
+        // <img>
+        $('.bt a img').rollover('_on');
+        // <img>最初から_on画像の時
+        $('a.on img').not('');
+        // <input type="image">
+        $('form input:image').rollover('_on');
+    }
+});
+
+jQuery.fn.rollover = function(suffix) {
+    suffix = suffix || '_on';
+    var check = new RegExp(suffix + '\\.\\w+$');
+    return this.each(function() {
+        var img = jQuery(this);
+        var src = img.attr('src');
+        if (check.test(src)) return;
+        var _on = src.replace(/\.\w+$/, suffix + '$&');
+        jQuery('<img>').attr('src', _on);
+        img.hover(
+            function() { img.attr('src', _on); },
+            function() { img.attr('src', src); }
+        );
+    });
+};
+
+
+// ハイフンに変換 .hyphens に発火 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+$(document).ready(function() {
+$('.hyphens').on('input', function() {
+  convertHyphens(this);
+});
+});
+
+function convertHyphens(inputElement) {
+const inputValue = $(inputElement).val();
+
+const replaced = inputValue
+  .replace(/[０-９．]/g, function (s) {
+    return String.fromCharCode(s.charCodeAt(0) - 65248);
+  })
+  .replace(/[-－﹣−‐⁃‑‒–—﹘―⎯⏤ーｰ─━]/g, '-');
+
+$(inputElement).val(replaced);
+}

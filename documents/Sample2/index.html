@@ -1,0 +1,2849 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)https://pridejapan.net/pjtoyama/index.html -->
+<html lang="ja" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title></title>
+<meta name="viewport" content="width=device-width">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link rel="stylesheet" type="text/css" href="./index_files/style.css">
+<script src="./index_files/jquery.js.ダウンロード"></script>
+<script src="./index_files/script.js.ダウンロード"></script>
+<script src="./index_files/jquery.smoothscroll.js.ダウンロード"></script>
+<script src="./index_files/jquery.scrollshow.js.ダウンロード"></script>
+<script src="./index_files/jquery.slideshow.js.ダウンロード"></script>
+<script>
+$(function($){
+	$('html').smoothscroll({easing : 'swing', speed : 1000, margintop : 50, headerfix : $('header'), outersmooth : true});
+	$('.totop').scrollshow({position : 500});
+	$('.slide').slideshow({
+		touch        : false,
+		bgImage      : false,
+		autoSlide    : true,
+		effect       : 'fade',
+		repeat       : true,
+		easing       : 'swing',
+		interval     : 5000,
+		duration     : 1000,
+		imgHoverStop : false,
+		navHoverStop : false,
+		navImg       : false,
+		navImgCustom : false,
+		navImgSuffix : ''
+	});
+});
+</script>
+
+<style type="text/css">/*! PhotoSwipe main CSS by Dmitry Semenov | photoswipe.com | MIT license */
+/*
+	Styles for basic PhotoSwipe functionality (sliding area, open/close transitions)
+*/
+/* pswp = photoswipe */
+.pswp {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  touch-action: none;
+  z-index: 1500;
+  -webkit-text-size-adjust: 100%;
+  /* create separate layer, to avoid paint on window.onscroll in webkit/blink */
+  -webkit-backface-visibility: hidden;
+  outline: none; }
+
+.pswp * {
+  box-sizing: border-box; }
+
+.pswp img {
+  max-width: none; }
+
+/* style is added when JS option showHideOpacity is set to true */
+.pswp--animate_opacity {
+  /* 0.001, because opacity:0 doesn't trigger Paint action, which causes lag at start of transition */
+  opacity: 0.001;
+  will-change: opacity;
+  /* for open/close transition */
+  transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+
+.pswp--open {
+  display: block; }
+
+.pswp--zoom-allowed .pswp__img {
+  /* autoprefixer: off */
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;
+  cursor: zoom-in; }
+
+.pswp--zoomed-in .pswp__img {
+  /* autoprefixer: off */
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab; }
+
+.pswp--dragging .pswp__img {
+  /* autoprefixer: off */
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  cursor: grabbing; }
+
+/*
+	Background is added as a separate element.
+	As animating opacity is much faster than animating rgba() background-color.
+*/
+.pswp__bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  will-change: opacity; }
+
+.pswp__scroll-wrap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; }
+
+.pswp__container,
+.pswp__zoom-wrap {
+  touch-action: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0; }
+
+/* Prevent selection and tap highlights */
+.pswp__container,
+.pswp__img {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none; }
+
+.pswp__zoom-wrap {
+  position: absolute;
+  width: 100%;
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
+  /* for open/close transition */
+  transition: -webkit-transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
+  transition: transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
+  transition: transform 333ms cubic-bezier(0.4, 0, 0.22, 1), -webkit-transform 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+
+.pswp__bg {
+  will-change: opacity;
+  /* for open/close transition */
+  transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+
+.pswp--animated-in .pswp__bg,
+.pswp--animated-in .pswp__zoom-wrap {
+  transition: none; }
+
+.pswp__container,
+.pswp__zoom-wrap {
+  -webkit-backface-visibility: hidden; }
+
+.pswp__item {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden; }
+
+.pswp__img {
+  position: absolute;
+  width: auto;
+  height: auto;
+  top: 0;
+  left: 0; }
+
+/*
+	stretched thumbnail or div placeholder element (see below)
+	style is added to avoid flickering in webkit/blink when layers overlap
+*/
+.pswp__img--placeholder {
+  -webkit-backface-visibility: hidden; }
+
+/*
+	div element that matches size of large image
+	large image loads on top of it
+*/
+.pswp__img--placeholder--blank {
+  background: #222; }
+
+.pswp--ie .pswp__img {
+  width: 100% !important;
+  height: auto !important;
+  left: 0;
+  top: 0; }
+
+/*
+	Error message appears when image is not loaded
+	(JS option errorMsg controls markup)
+*/
+.pswp__error-msg {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  line-height: 16px;
+  margin-top: -8px;
+  color: #CCC; }
+
+.pswp__error-msg a {
+  color: #CCC;
+  text-decoration: underline; }
+</style><style type="text/css">/*! PhotoSwipe Default UI CSS by Dmitry Semenov | photoswipe.com | MIT license */
+/*
+
+	Contents:
+
+	1. Buttons
+	2. Share modal and links
+	3. Index indicator ("1 of X" counter)
+	4. Caption
+	5. Loading indicator
+	6. Additional styles (root element, top bar, idle state, hidden state, etc.)
+
+*/
+/*
+	
+	1. Buttons
+
+ */
+/* <button> css reset */
+.pswp__button {
+  width: 44px;
+  height: 44px;
+  position: relative;
+  background: none;
+  cursor: pointer;
+  overflow: visible;
+  -webkit-appearance: none;
+  display: block;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  float: right;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+  box-shadow: none; }
+
+.pswp__button:focus, .pswp__button:hover {
+  opacity: 1; }
+
+.pswp__button:active {
+  outline: none;
+  opacity: 0.9; }
+
+.pswp__button::-moz-focus-inner {
+  padding: 0;
+  border: 0; }
+
+/* pswp__ui--over-close class it added when mouse is over element that should close gallery */
+.pswp__ui--over-close .pswp__button--close {
+  opacity: 1; }
+
+.pswp__button,
+.pswp__button--arrow--left:before,
+.pswp__button--arrow--right:before {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQgAAABYCAQAAACjBqE3AAAB6klEQVR4Ae3bsWpUQRTG8YkkanwCa7GzVotsI/gEgk9h4Vu4ySLYmMYgbJrc3lrwZbJwC0FMt4j7F6Y4oIZrsXtgxvx/1c0ufEX4cnbmLCmSJEmSJEmSJEmSJP3XCBPvbJU+8doWmDFwyZpLBmYlNJebz0KwzykwsuSYJSNwykEJreV2BaBMaLIQZ2xYcFgqDlmw4ayE/FwL0dDk4Qh4W37DAjgqIT+3HRbigjH+iikVdxgZStgyN0Su2sXIeTwTT+esdpcbIlfNAuZ/TxresG4zV8kYWSZNiKUTokMMSWeIwTNEn4fK2TW3gRNgVkJLuVksROA9G+bEvoATNlBCa7nZXEwdxEZxzpKRKFh+bsv8LmPFmhX1OwfIz81jIRJQ5eeqG9B+riRJkiRJkiRJkiRJkiRJkiRJUkvA/8RQoEpKlJWINFkJ62AlrEP/mNBibnv2yz/A3t7Uq3LcpoxP8COjC1T5vxoAD5VdoEqdDrd5QuW1swtUSaueh3zkiuBiqgtA2OlkeMcP/uDqugsJdbjHF65VdPMKwS0+WQc/MgKvrIOHysB9vgPwk8+85hmPbnQdvHZyDMAFD7L3EOpgMcVdvnHFS0/vlatrXvCVx0U9gt3fxvnA0/hB4nmRJEmSJEmSJEmSJGmHfgFLaDPoMu5xWwAAAABJRU5ErkJggg==) 0 0 no-repeat;
+  background-size: 264px 88px;
+  width: 44px;
+  height: 44px; }
+
+@media (-webkit-min-device-pixel-ratio: 1.1), (-webkit-min-device-pixel-ratio: 1.09375), (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
+  /* Serve SVG sprite if browser supports SVG and resolution is more than 105dpi */
+  .pswp--svg .pswp__button,
+  .pswp--svg .pswp__button--arrow--left:before,
+  .pswp--svg .pswp__button--arrow--right:before {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjY0IiBoZWlnaHQ9Ijg4IiB2aWV3Qm94PSIwIDAgMjY0IDg4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0aXRsZT5kZWZhdWx0LXNraW4gMjwvdGl0bGU+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Zz48cGF0aCBkPSJNNjcuMDAyIDU5LjV2My43NjhjLTYuMzA3Ljg0LTkuMTg0IDUuNzUtMTAuMDAyIDkuNzMyIDIuMjItMi44MyA1LjU2NC01LjA5OCAxMC4wMDItNS4wOThWNzEuNUw3MyA2NS41ODUgNjcuMDAyIDU5LjV6IiBpZD0iU2hhcGUiIGZpbGw9IiNmZmYiLz48ZyBmaWxsPSIjZmZmIj48cGF0aCBkPSJNMTMgMjl2LTVoMnYzaDN2MmgtNXpNMTMgMTVoNXYyaC0zdjNoLTJ2LTV6TTMxIDE1djVoLTJ2LTNoLTN2LTJoNXpNMzEgMjloLTV2LTJoM3YtM2gydjV6IiBpZD0iU2hhcGUiLz48L2c+PGcgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTYyIDI0djVoLTJ2LTNoLTN2LTJoNXpNNjIgMjBoLTV2LTJoM3YtM2gydjV6TTcwIDIwdi01aDJ2M2gzdjJoLTV6TTcwIDI0aDV2MmgtM3YzaC0ydi01eiIvPjwvZz48cGF0aCBkPSJNMjAuNTg2IDY2bC01LjY1Ni01LjY1NiAxLjQxNC0xLjQxNEwyMiA2NC41ODZsNS42NTYtNS42NTYgMS40MTQgMS40MTRMMjMuNDE0IDY2bDUuNjU2IDUuNjU2LTEuNDE0IDEuNDE0TDIyIDY3LjQxNGwtNS42NTYgNS42NTYtMS40MTQtMS40MTRMMjAuNTg2IDY2eiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xMTEuNzg1IDY1LjAzTDExMCA2My41bDMtMy41aC0xMHYtMmgxMGwtMy0zLjUgMS43ODUtMS40NjhMMTE3IDU5bC01LjIxNSA2LjAzeiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xNTIuMjE1IDY1LjAzTDE1NCA2My41bC0zLTMuNWgxMHYtMmgtMTBsMy0zLjUtMS43ODUtMS40NjhMMTQ3IDU5bDUuMjE1IDYuMDN6IiBmaWxsPSIjZmZmIi8+PGc+PHBhdGggaWQ9IlJlY3RhbmdsZS0xMSIgZmlsbD0iI2ZmZiIgZD0iTTE2MC45NTcgMjguNTQzbC0zLjI1LTMuMjUtMS40MTMgMS40MTQgMy4yNSAzLjI1eiIvPjxwYXRoIGQ9Ik0xNTIuNSAyN2MzLjAzOCAwIDUuNS0yLjQ2MiA1LjUtNS41cy0yLjQ2Mi01LjUtNS41LTUuNS01LjUgMi40NjItNS41IDUuNSAyLjQ2MiA1LjUgNS41IDUuNXoiIGlkPSJPdmFsLTEiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTUwIDIxaDV2MWgtNXoiLz48L2c+PGc+PHBhdGggZD0iTTExNi45NTcgMjguNTQzbC0xLjQxNCAxLjQxNC0zLjI1LTMuMjUgMS40MTQtMS40MTQgMy4yNSAzLjI1eiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xMDguNSAyN2MzLjAzOCAwIDUuNS0yLjQ2MiA1LjUtNS41cy0yLjQ2Mi01LjUtNS41LTUuNS01LjUgMi40NjItNS41IDUuNSAyLjQ2MiA1LjUgNS41IDUuNXoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTA2IDIxaDV2MWgtNXoiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTA5LjA0MyAxOS4wMDhsLS4wODUgNS0xLS4wMTcuMDg1LTV6Ii8+PC9nPjwvZz48L2c+PC9zdmc+); }
+  .pswp--svg .pswp__button--arrow--left,
+  .pswp--svg .pswp__button--arrow--right {
+    background: none; } }
+
+.pswp__button--close {
+  background-position: 0 -44px; }
+
+.pswp__button--share {
+  background-position: -44px -44px; }
+
+.pswp__button--fs {
+  display: none; }
+
+.pswp--supports-fs .pswp__button--fs {
+  display: block; }
+
+.pswp--fs .pswp__button--fs {
+  background-position: -44px 0; }
+
+.pswp__button--zoom {
+  display: none;
+  background-position: -88px 0; }
+
+.pswp--zoom-allowed .pswp__button--zoom {
+  display: block; }
+
+.pswp--zoomed-in .pswp__button--zoom {
+  background-position: -132px 0; }
+
+/* no arrows on touch screens */
+.pswp--touch .pswp__button--arrow--left,
+.pswp--touch .pswp__button--arrow--right {
+  visibility: hidden; }
+
+/*
+	Arrow buttons hit area
+	(icon is added to :before pseudo-element)
+*/
+.pswp__button--arrow--left,
+.pswp__button--arrow--right {
+  background: none;
+  top: 50%;
+  margin-top: -50px;
+  width: 70px;
+  height: 100px;
+  position: absolute; }
+
+.pswp__button--arrow--left {
+  left: 0; }
+
+.pswp__button--arrow--right {
+  right: 0; }
+
+.pswp__button--arrow--left:before,
+.pswp__button--arrow--right:before {
+  content: '';
+  top: 35px;
+  background-color: rgba(0, 0, 0, 0.3);
+  height: 30px;
+  width: 32px;
+  position: absolute; }
+
+.pswp__button--arrow--left:before {
+  left: 6px;
+  background-position: -138px -44px; }
+
+.pswp__button--arrow--right:before {
+  right: 6px;
+  background-position: -94px -44px; }
+
+/*
+
+	2. Share modal/popup and links
+
+ */
+.pswp__counter,
+.pswp__share-modal {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+.pswp__share-modal {
+  display: block;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  position: absolute;
+  z-index: 1600;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  -webkit-backface-visibility: hidden;
+  will-change: opacity; }
+
+.pswp__share-modal--hidden {
+  display: none; }
+
+.pswp__share-tooltip {
+  z-index: 1620;
+  position: absolute;
+  background: #FFF;
+  top: 56px;
+  border-radius: 2px;
+  display: block;
+  width: auto;
+  right: 44px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  -webkit-transform: translateY(6px);
+  transform: translateY(6px);
+  transition: -webkit-transform 0.25s;
+  transition: transform 0.25s;
+  transition: transform 0.25s, -webkit-transform 0.25s;
+  -webkit-backface-visibility: hidden;
+  will-change: transform; }
+
+.pswp__share-tooltip a {
+  display: block;
+  padding: 8px 12px;
+  color: #000;
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 18px; }
+
+.pswp__share-tooltip a:hover {
+  text-decoration: none;
+  color: #000; }
+
+.pswp__share-tooltip a:first-child {
+  /* round corners on the first/last list item */
+  border-radius: 2px 2px 0 0; }
+
+.pswp__share-tooltip a:last-child {
+  border-radius: 0 0 2px 2px; }
+
+.pswp__share-modal--fade-in {
+  opacity: 1; }
+
+.pswp__share-modal--fade-in .pswp__share-tooltip {
+  -webkit-transform: translateY(0);
+  transform: translateY(0); }
+
+/* increase size of share links on touch devices */
+.pswp--touch .pswp__share-tooltip a {
+  padding: 16px 12px; }
+
+a.pswp__share--facebook:before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: -12px;
+  right: 15px;
+  border: 6px solid transparent;
+  border-bottom-color: #FFF;
+  -webkit-pointer-events: none;
+  -moz-pointer-events: none;
+  pointer-events: none; }
+
+a.pswp__share--facebook:hover {
+  background: #3E5C9A;
+  color: #FFF; }
+
+a.pswp__share--facebook:hover:before {
+  border-bottom-color: #3E5C9A; }
+
+a.pswp__share--twitter:hover {
+  background: #55ACEE;
+  color: #FFF; }
+
+a.pswp__share--pinterest:hover {
+  background: #CCC;
+  color: #CE272D; }
+
+a.pswp__share--download:hover {
+  background: #DDD; }
+
+/*
+
+	3. Index indicator ("1 of X" counter)
+
+ */
+.pswp__counter {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 44px;
+  font-size: 13px;
+  line-height: 44px;
+  color: #FFF;
+  opacity: 0.75;
+  padding: 0 10px; }
+
+/*
+	
+	4. Caption
+
+ */
+.pswp__caption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  min-height: 44px; }
+
+.pswp__caption small {
+  font-size: 11px;
+  color: #BBB; }
+
+.pswp__caption__center {
+  text-align: left;
+  max-width: 420px;
+  margin: 0 auto;
+  font-size: 13px;
+  padding: 10px;
+  line-height: 20px;
+  color: #CCC; }
+
+.pswp__caption--empty {
+  display: none; }
+
+/* Fake caption element, used to calculate height of next/prev image */
+.pswp__caption--fake {
+  visibility: hidden; }
+
+/*
+
+	5. Loading indicator (preloader)
+
+	You can play with it here - http://codepen.io/dimsemenov/pen/yyBWoR
+
+ */
+.pswp__preloader {
+  width: 44px;
+  height: 44px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -22px;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  will-change: opacity;
+  direction: ltr; }
+
+.pswp__preloader__icn {
+  width: 20px;
+  height: 20px;
+  margin: 12px; }
+
+.pswp__preloader--active {
+  opacity: 1; }
+
+.pswp__preloader--active .pswp__preloader__icn {
+  /* We use .gif in browsers that don't support CSS animation */
+  background: url(data:image/gif;base64,R0lGODlhFAAUAPMIAIeHhz8/P1dXVycnJ8/Pz7e3t5+fn29vb////wAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFBwAIACwAAAAAFAAUAEAEUxDJSatFxtwaggWAdIyHJAhXoRYSQUhDPGx0TbmujahbXGWZWqdDAYEsp5NupLPkdDwE7oXwWVasimzWrAE1tKFHErQRK8eL8mMUlRBJVI307uoiACH5BAUHAAgALAEAAQASABIAAAROEMkpS6E4W5upMdUmEQT2feFIltMJYivbvhnZ3R0A4NMwIDodz+cL7nDEn5CH8DGZh8MtEMBEoxkqlXKVIgQCibbK9YLBYvLtHH5K0J0IACH5BAUHAAgALAEAAQASABIAAAROEMkpjaE4W5spANUmFQX2feFIltMJYivbvhnZ3d1x4BNBIDodz+cL7nDEn5CH8DGZAsFtMMBEoxkqlXKVIgIBibbK9YLBYvLtHH5K0J0IACH5BAUHAAgALAEAAQASABIAAAROEMkpAaA4W5vpOdUmGQb2feFIltMJYivbvhnZ3Z0g4FNRIDodz+cL7nDEn5CH8DGZgcCNQMBEoxkqlXKVIgYDibbK9YLBYvLtHH5K0J0IACH5BAUHAAgALAEAAQASABIAAAROEMkpz6E4W5upENUmAQD2feFIltMJYivbvhnZ3V0Q4JNhIDodz+cL7nDEn5CH8DGZg8GtUMBEoxkqlXKVIggEibbK9YLBYvLtHH5K0J0IACH5BAUHAAgALAEAAQASABIAAAROEMkphaA4W5tpCNUmHQf2feFIltMJYivbvhnZ3d0w4BMAIDodz+cL7nDEn5CH8DGZBMLNYMBEoxkqlXKVIgoFibbK9YLBYvLtHH5K0J0IACH5BAUHAAgALAEAAQASABIAAAROEMkpQ6A4W5vpGNUmCQL2feFIltMJYivbvhnZ3R1B4NNxIDodz+cL7nDEn5CH8DGZhcINAMBEoxkqlXKVIgwGibbK9YLBYvLtHH5K0J0IACH5BAUHAAcALAEAAQASABIAAANCeLo6wzA6FxkhbaoQ4L3ZxnXLh0EjWZ4RV71VUcCLIByyTNt2PsO8m452sBGJBsNxkUwuD03lAQBASqnUJ7aq5UYSADs=) 0 0 no-repeat; }
+
+.pswp--css_animation .pswp__preloader--active {
+  opacity: 1; }
+
+.pswp--css_animation .pswp__preloader--active .pswp__preloader__icn {
+  -webkit-animation: clockwise 500ms linear infinite;
+  animation: clockwise 500ms linear infinite; }
+
+.pswp--css_animation .pswp__preloader--active .pswp__preloader__donut {
+  -webkit-animation: donut-rotate 1000ms cubic-bezier(0.4, 0, 0.22, 1) infinite;
+  animation: donut-rotate 1000ms cubic-bezier(0.4, 0, 0.22, 1) infinite; }
+
+.pswp--css_animation .pswp__preloader__icn {
+  background: none;
+  opacity: 0.75;
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  margin: 0; }
+
+.pswp--css_animation .pswp__preloader__cut {
+  /* 
+			The idea of animating inner circle is based on Polymer ("material") loading indicator 
+			 by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html
+		*/
+  position: relative;
+  width: 7px;
+  height: 14px;
+  overflow: hidden; }
+
+.pswp--css_animation .pswp__preloader__donut {
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #FFF;
+  border-radius: 50%;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: none;
+  margin: 0; }
+
+@media screen and (max-width: 1024px) {
+  .pswp__preloader {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0;
+    float: right; } }
+
+@-webkit-keyframes clockwise {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@keyframes clockwise {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@-webkit-keyframes donut-rotate {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0); }
+  50% {
+    -webkit-transform: rotate(-140deg);
+    transform: rotate(-140deg); }
+  100% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0); } }
+
+@keyframes donut-rotate {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0); }
+  50% {
+    -webkit-transform: rotate(-140deg);
+    transform: rotate(-140deg); }
+  100% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0); } }
+
+/*
+	
+	6. Additional styles
+
+ */
+/* root element of UI */
+.pswp__ui {
+  -webkit-font-smoothing: auto;
+  visibility: visible;
+  opacity: 1;
+  z-index: 1550; }
+
+/* top black bar with buttons and "1 of X" indicator */
+.pswp__top-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 44px;
+  width: 100%; }
+
+.pswp__caption,
+.pswp__top-bar,
+.pswp--has_mouse .pswp__button--arrow--left,
+.pswp--has_mouse .pswp__button--arrow--right {
+  -webkit-backface-visibility: hidden;
+  will-change: opacity;
+  transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+
+/* pswp--has_mouse class is added only when two subsequent mousemove events occur */
+.pswp--has_mouse .pswp__button--arrow--left,
+.pswp--has_mouse .pswp__button--arrow--right {
+  visibility: visible; }
+
+.pswp__top-bar,
+.pswp__caption {
+  background-color: rgba(0, 0, 0, 0.5); }
+
+/* pswp__ui--fit class is added when main image "fits" between top bar and bottom bar (caption) */
+.pswp__ui--fit .pswp__top-bar,
+.pswp__ui--fit .pswp__caption {
+  background-color: rgba(0, 0, 0, 0.3); }
+
+/* pswp__ui--idle class is added when mouse isn't moving for several seconds (JS option timeToIdle) */
+.pswp__ui--idle .pswp__top-bar {
+  opacity: 0; }
+
+.pswp__ui--idle .pswp__button--arrow--left,
+.pswp__ui--idle .pswp__button--arrow--right {
+  opacity: 0; }
+
+/*
+	pswp__ui--hidden class is added when controls are hidden
+	e.g. when user taps to toggle visibility of controls
+*/
+.pswp__ui--hidden .pswp__top-bar,
+.pswp__ui--hidden .pswp__caption,
+.pswp__ui--hidden .pswp__button--arrow--left,
+.pswp__ui--hidden .pswp__button--arrow--right {
+  /* Force paint & create composition layer for controls. */
+  opacity: 0.001; }
+
+/* pswp__ui--one-slide class is added when there is just one item in gallery */
+.pswp__ui--one-slide .pswp__button--arrow--left,
+.pswp__ui--one-slide .pswp__button--arrow--right,
+.pswp__ui--one-slide .pswp__counter {
+  display: none; }
+
+.pswp__element--disabled {
+  display: none !important; }
+
+.pswp--minimal--dark .pswp__top-bar {
+  background: none; }
+</style><style type="text/css">.omyu.tnm_schedule #schedule {
+  padding: 0px 30px 20px; }
+
+.omyu.tnm_schedule .gaming {
+  color: #2E59AE; }
+
+.omyu.tnm_schedule table.school-table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0; }
+  .omyu.tnm_schedule table.school-table caption {
+    padding-left: 1em;
+    line-height: 2;
+    font-size: 100%;
+    vertical-align: middle;
+    text-align: left; }
+  .omyu.tnm_schedule table.school-table th {
+    padding: 0.5em 0.2em;
+    border: 1px solid #c9c9c9;
+    line-height: 1.2;
+    font-size: 100%;
+    color: #363f42;
+    background-color: #e3e3e3;
+    text-align: center;
+    vertical-align: middle; }
+  .omyu.tnm_schedule table.school-table tr:nth-child(2n+1) {
+    background: #F1F6F9; }
+  .omyu.tnm_schedule table.school-table td {
+    padding: 0.5em 0.2em;
+    border: 1px solid #c9c9c9;
+    line-height: 1.2;
+    font-size: 100%;
+    text-align: center;
+    vertical-align: middle; }
+    .omyu.tnm_schedule table.school-table td.day {
+      background: #fff; }
+    .omyu.tnm_schedule table.school-table td a {
+      text-decoration: none;
+      white-space: nowrap; }
+      .omyu.tnm_schedule table.school-table td a:hover {
+        text-decoration: underline; }
+  .omyu.tnm_schedule table.school-table tr {
+    width: 100%; }
+  .omyu.tnm_schedule table.school-table.todayGames tr:first-child {
+    display: none; }
+  .omyu.tnm_schedule table.school-table.todayGames .team {
+    width: 25%; }
+  .omyu.tnm_schedule table.school-table.todayGames .gameStatus {
+    width: 20%; }
+  .omyu.tnm_schedule table.school-table.todayGames .stadiumName {
+    white-space: normal; }
+  .omyu.tnm_schedule table.school-table.allGames .day {
+    width: 19%; }
+  .omyu.tnm_schedule table.school-table.allGames .game {
+    width: 7%; }
+  .omyu.tnm_schedule table.school-table.allGames .team {
+    width: 18%; }
+  .omyu.tnm_schedule table.school-table.allGames .data {
+    width: 10%; }
+  .omyu.tnm_schedule table.school-table.allGames .stadiumName {
+    width: 28%; }
+
+.omyu.tnm_schedule.v_okayama table.school-table th {
+  background-color: #0b0676;
+  color: #fff; }
+
+.omyu.tnm_schedule.v_okayama table.school-table.soft th {
+  background-color: #ff8c8c; }
+
+@media only screen and (max-width: 799px) {
+  .omyu.tnm_schedule #schedule {
+    padding: 0 0 10px; }
+  .omyu.tnm_schedule table.school-table {
+    margin: 15px 0; }
+    .omyu.tnm_schedule table.school-table caption {
+      font-size: 12px;
+      font-weight: bold; }
+    .omyu.tnm_schedule table.school-table th {
+      padding: 4px 0 3px;
+      line-height: 1.4em;
+      font-size: 11px;
+      border-top: 1px solid #AFBDCB;
+      border-right: 1px solid #AFBDCB;
+      border-bottom: 1px solid #AFBDCB; }
+    .omyu.tnm_schedule table.school-table td {
+      padding: 5px 2px;
+      line-height: 1.6em;
+      font-size: 13px;
+      border-right: 1px solid #C6D7E7;
+      border-bottom: 1px solid #C6D7E7; }
+    .omyu.tnm_schedule table.school-table td:first-child {
+      border-left: 1px solid #C6D7E7; }
+    .omyu.tnm_schedule table.school-table.todayGames tr:nth-child(2) td {
+      border-top: 1px solid #C6D7E7; }
+    .omyu.tnm_schedule table.school-table.allGames .day {
+      width: 14%; }
+    .omyu.tnm_schedule table.school-table.allGames .team {
+      width: 22%; }
+    .omyu.tnm_schedule table.school-table.allGames .stadiumName {
+      width: 25% !important; } }
+
+.omyu.tnm_tournament #tournament {
+  padding: 0px 30px 20px; }
+
+.omyu.tnm_tournament #tournamentImg {
+  width: 100%; }
+
+.omyu.tnm_tournament .tournamentTxt {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 12px;
+  color: #666; }
+
+.omyu.tnm_tournament .yaguWrap img {
+  width: 100%;
+  height: auto; }
+
+.omyu.tnm_tournament .svg {
+  display: block;
+  width: 100%;
+  background: white; }
+
+@media only screen and (max-width: 799px) {
+  .omyu.tnm_tournament #tournament {
+    padding: 0 0 10px; }
+  .omyu.tnm_tournament .tournamentTxt {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 10px; } }
+
+.omyu.tnm_team #team {
+  padding: 0px 30px 20px; }
+
+.omyu.tnm_team table.team-table {
+  width: 100%;
+  margin: 20px 0; }
+  .omyu.tnm_team table.team-table td {
+    padding: 0.5em 1em;
+    border: none;
+    border-bottom: 1px dotted #ddd;
+    line-height: 1.4;
+    font-size: 100%;
+    text-align: left;
+    vertical-align: middle; }
+    .omyu.tnm_team table.team-table td a {
+      text-decoration: none; }
+      .omyu.tnm_team table.team-table td a:hover {
+        text-decoration: underline; }
+
+@media only screen and (max-width: 799px) {
+  .omyu.tnm_team #team {
+    padding: 0 0 10px; }
+  .omyu.tnm_team table.team-table {
+    margin: 15px 0; }
+    .omyu.tnm_team table.team-table td {
+      font-size: 90%;
+      line-height: 1.2; } }
+
+.omyu {
+  background-color: #fff;
+  max-width: 1280px;
+  min-width: 600px;
+  margin: 20px auto; }
+  .omyu h2.title {
+    padding: 15px 0;
+    margin: 0;
+    background-color: #1d2257;
+    font-size: 18px;
+    color: #fff;
+    font-weight: bold;
+    text-align: center; }
+  .omyu .menu ul {
+    width: 100%;
+    padding: 30px 0 0;
+    letter-spacing: -0.4em;
+    list-style: none; }
+    .omyu .menu ul li {
+      display: inline-block;
+      width: 33.3%;
+      text-align: center;
+      letter-spacing: normal;
+      vertical-align: top; }
+      .omyu .menu ul li a {
+        display: block;
+        background: transparent;
+        margin: 0;
+        padding: 0 0 14px;
+        width: 100%;
+        font-size: 16px;
+        color: #666;
+        text-decoration: none;
+        border-bottom: solid 1px #ccc;
+        transition: color 0.2s; }
+      .omyu .menu ul li.current a {
+        padding: 0 0 12px;
+        color: #1d2257;
+        border-bottom: solid 3px #1d2257; }
+  .omyu .copyright {
+    float: right;
+    text-align: right; }
+  .omyu.v_okayama {
+    padding-top: 20px; }
+    .omyu.v_okayama h2.title {
+      margin: 0 30px;
+      background-color: #0b0676; }
+      .omyu.v_okayama h2.title.soft {
+        background-color: #ff8c8c; }
+  @media only screen and (max-width: 799px) {
+    .omyu {
+      min-width: auto;
+      margin: 10px auto; }
+      .omyu h2.title {
+        padding: 10px 0;
+        font-size: 16px; }
+      .omyu .menu ul {
+        padding-top: 15px; }
+        .omyu .menu ul li a {
+          font-size: 12px; }
+      .omyu .copyright {
+        font-size: 70%; }
+      .omyu.v_okayama {
+        padding-top: 0; }
+        .omyu.v_okayama h2.title {
+          margin: 0; } }
+</style><style type="text/css">/*! PhotoSwipe main CSS by Dmitry Semenov | photoswipe.com | MIT license */
+/*
+	Styles for basic PhotoSwipe functionality (sliding area, open/close transitions)
+*/
+/* pswp = photoswipe */
+.pswp {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  touch-action: none;
+  z-index: 1500;
+  -webkit-text-size-adjust: 100%;
+  /* create separate layer, to avoid paint on window.onscroll in webkit/blink */
+  -webkit-backface-visibility: hidden;
+  outline: none; }
+
+.pswp * {
+  box-sizing: border-box; }
+
+.pswp img {
+  max-width: none; }
+
+/* style is added when JS option showHideOpacity is set to true */
+.pswp--animate_opacity {
+  /* 0.001, because opacity:0 doesn't trigger Paint action, which causes lag at start of transition */
+  opacity: 0.001;
+  will-change: opacity;
+  /* for open/close transition */
+  transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+
+.pswp--open {
+  display: block; }
+
+.pswp--zoom-allowed .pswp__img {
+  /* autoprefixer: off */
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;
+  cursor: zoom-in; }
+
+.pswp--zoomed-in .pswp__img {
+  /* autoprefixer: off */
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab; }
+
+.pswp--dragging .pswp__img {
+  /* autoprefixer: off */
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  cursor: grabbing; }
+
+/*
+	Background is added as a separate element.
+	As animating opacity is much faster than animating rgba() background-color.
+*/
+.pswp__bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  will-change: opacity; }
+
+.pswp__scroll-wrap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; }
+
+.pswp__container,
+.pswp__zoom-wrap {
+  touch-action: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0; }
+
+/* Prevent selection and tap highlights */
+.pswp__container,
+.pswp__img {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none; }
+
+.pswp__zoom-wrap {
+  position: absolute;
+  width: 100%;
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
+  /* for open/close transition */
+  transition: -webkit-transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
+  transition: transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
+  transition: transform 333ms cubic-bezier(0.4, 0, 0.22, 1), -webkit-transform 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+
+.pswp__bg {
+  will-change: opacity;
+  /* for open/close transition */
+  transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+
+.pswp--animated-in .pswp__bg,
+.pswp--animated-in .pswp__zoom-wrap {
+  transition: none; }
+
+.pswp__container,
+.pswp__zoom-wrap {
+  -webkit-backface-visibility: hidden; }
+
+.pswp__item {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden; }
+
+.pswp__img {
+  position: absolute;
+  width: auto;
+  height: auto;
+  top: 0;
+  left: 0; }
+
+/*
+	stretched thumbnail or div placeholder element (see below)
+	style is added to avoid flickering in webkit/blink when layers overlap
+*/
+.pswp__img--placeholder {
+  -webkit-backface-visibility: hidden; }
+
+/*
+	div element that matches size of large image
+	large image loads on top of it
+*/
+.pswp__img--placeholder--blank {
+  background: #222; }
+
+.pswp--ie .pswp__img {
+  width: 100% !important;
+  height: auto !important;
+  left: 0;
+  top: 0; }
+
+/*
+	Error message appears when image is not loaded
+	(JS option errorMsg controls markup)
+*/
+.pswp__error-msg {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  line-height: 16px;
+  margin-top: -8px;
+  color: #CCC; }
+
+.pswp__error-msg a {
+  color: #CCC;
+  text-decoration: underline; }
+</style><style type="text/css">/*! PhotoSwipe Default UI CSS by Dmitry Semenov | photoswipe.com | MIT license */
+/*
+
+	Contents:
+
+	1. Buttons
+	2. Share modal and links
+	3. Index indicator ("1 of X" counter)
+	4. Caption
+	5. Loading indicator
+	6. Additional styles (root element, top bar, idle state, hidden state, etc.)
+
+*/
+/*
+	
+	1. Buttons
+
+ */
+/* <button> css reset */
+.pswp__button {
+  width: 44px;
+  height: 44px;
+  position: relative;
+  background: none;
+  cursor: pointer;
+  overflow: visible;
+  -webkit-appearance: none;
+  display: block;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  float: right;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+  box-shadow: none; }
+
+.pswp__button:focus, .pswp__button:hover {
+  opacity: 1; }
+
+.pswp__button:active {
+  outline: none;
+  opacity: 0.9; }
+
+.pswp__button::-moz-focus-inner {
+  padding: 0;
+  border: 0; }
+
+/* pswp__ui--over-close class it added when mouse is over element that should close gallery */
+.pswp__ui--over-close .pswp__button--close {
+  opacity: 1; }
+
+.pswp__button,
+.pswp__button--arrow--left:before,
+.pswp__button--arrow--right:before {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQgAAABYCAQAAACjBqE3AAAB6klEQVR4Ae3bsWpUQRTG8YkkanwCa7GzVotsI/gEgk9h4Vu4ySLYmMYgbJrc3lrwZbJwC0FMt4j7F6Y4oIZrsXtgxvx/1c0ufEX4cnbmLCmSJEmSJEmSJEmSJP3XCBPvbJU+8doWmDFwyZpLBmYlNJebz0KwzykwsuSYJSNwykEJreV2BaBMaLIQZ2xYcFgqDlmw4ayE/FwL0dDk4Qh4W37DAjgqIT+3HRbigjH+iikVdxgZStgyN0Su2sXIeTwTT+esdpcbIlfNAuZ/TxresG4zV8kYWSZNiKUTokMMSWeIwTNEn4fK2TW3gRNgVkJLuVksROA9G+bEvoATNlBCa7nZXEwdxEZxzpKRKFh+bsv8LmPFmhX1OwfIz81jIRJQ5eeqG9B+riRJkiRJkiRJkiRJkiRJkiRJUkvA/8RQoEpKlJWINFkJ62AlrEP/mNBibnv2yz/A3t7Uq3LcpoxP8COjC1T5vxoAD5VdoEqdDrd5QuW1swtUSaueh3zkiuBiqgtA2OlkeMcP/uDqugsJdbjHF65VdPMKwS0+WQc/MgKvrIOHysB9vgPwk8+85hmPbnQdvHZyDMAFD7L3EOpgMcVdvnHFS0/vlatrXvCVx0U9gt3fxvnA0/hB4nmRJEmSJEmSJEmSJGmHfgFLaDPoMu5xWwAAAABJRU5ErkJggg==) 0 0 no-repeat;
+  background-size: 264px 88px;
+  width: 44px;
+  height: 44px; }
+
+@media (-webkit-min-device-pixel-ratio: 1.1), (-webkit-min-device-pixel-ratio: 1.09375), (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
+  /* Serve SVG sprite if browser supports SVG and resolution is more than 105dpi */
+  .pswp--svg .pswp__button,
+  .pswp--svg .pswp__button--arrow--left:before,
+  .pswp--svg .pswp__button--arrow--right:before {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjY0IiBoZWlnaHQ9Ijg4IiB2aWV3Qm94PSIwIDAgMjY0IDg4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0aXRsZT5kZWZhdWx0LXNraW4gMjwvdGl0bGU+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Zz48cGF0aCBkPSJNNjcuMDAyIDU5LjV2My43NjhjLTYuMzA3Ljg0LTkuMTg0IDUuNzUtMTAuMDAyIDkuNzMyIDIuMjItMi44MyA1LjU2NC01LjA5OCAxMC4wMDItNS4wOThWNzEuNUw3MyA2NS41ODUgNjcuMDAyIDU5LjV6IiBpZD0iU2hhcGUiIGZpbGw9IiNmZmYiLz48ZyBmaWxsPSIjZmZmIj48cGF0aCBkPSJNMTMgMjl2LTVoMnYzaDN2MmgtNXpNMTMgMTVoNXYyaC0zdjNoLTJ2LTV6TTMxIDE1djVoLTJ2LTNoLTN2LTJoNXpNMzEgMjloLTV2LTJoM3YtM2gydjV6IiBpZD0iU2hhcGUiLz48L2c+PGcgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTYyIDI0djVoLTJ2LTNoLTN2LTJoNXpNNjIgMjBoLTV2LTJoM3YtM2gydjV6TTcwIDIwdi01aDJ2M2gzdjJoLTV6TTcwIDI0aDV2MmgtM3YzaC0ydi01eiIvPjwvZz48cGF0aCBkPSJNMjAuNTg2IDY2bC01LjY1Ni01LjY1NiAxLjQxNC0xLjQxNEwyMiA2NC41ODZsNS42NTYtNS42NTYgMS40MTQgMS40MTRMMjMuNDE0IDY2bDUuNjU2IDUuNjU2LTEuNDE0IDEuNDE0TDIyIDY3LjQxNGwtNS42NTYgNS42NTYtMS40MTQtMS40MTRMMjAuNTg2IDY2eiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xMTEuNzg1IDY1LjAzTDExMCA2My41bDMtMy41aC0xMHYtMmgxMGwtMy0zLjUgMS43ODUtMS40NjhMMTE3IDU5bC01LjIxNSA2LjAzeiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xNTIuMjE1IDY1LjAzTDE1NCA2My41bC0zLTMuNWgxMHYtMmgtMTBsMy0zLjUtMS43ODUtMS40NjhMMTQ3IDU5bDUuMjE1IDYuMDN6IiBmaWxsPSIjZmZmIi8+PGc+PHBhdGggaWQ9IlJlY3RhbmdsZS0xMSIgZmlsbD0iI2ZmZiIgZD0iTTE2MC45NTcgMjguNTQzbC0zLjI1LTMuMjUtMS40MTMgMS40MTQgMy4yNSAzLjI1eiIvPjxwYXRoIGQ9Ik0xNTIuNSAyN2MzLjAzOCAwIDUuNS0yLjQ2MiA1LjUtNS41cy0yLjQ2Mi01LjUtNS41LTUuNS01LjUgMi40NjItNS41IDUuNSAyLjQ2MiA1LjUgNS41IDUuNXoiIGlkPSJPdmFsLTEiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTUwIDIxaDV2MWgtNXoiLz48L2c+PGc+PHBhdGggZD0iTTExNi45NTcgMjguNTQzbC0xLjQxNCAxLjQxNC0zLjI1LTMuMjUgMS40MTQtMS40MTQgMy4yNSAzLjI1eiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xMDguNSAyN2MzLjAzOCAwIDUuNS0yLjQ2MiA1LjUtNS41cy0yLjQ2Mi01LjUtNS41LTUuNS01LjUgMi40NjItNS41IDUuNSAyLjQ2MiA1LjUgNS41IDUuNXoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTA2IDIxaDV2MWgtNXoiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTA5LjA0MyAxOS4wMDhsLS4wODUgNS0xLS4wMTcuMDg1LTV6Ii8+PC9nPjwvZz48L2c+PC9zdmc+); }
+  .pswp--svg .pswp__button--arrow--left,
+  .pswp--svg .pswp__button--arrow--right {
+    background: none; } }
+
+.pswp__button--close {
+  background-position: 0 -44px; }
+
+.pswp__button--share {
+  background-position: -44px -44px; }
+
+.pswp__button--fs {
+  display: none; }
+
+.pswp--supports-fs .pswp__button--fs {
+  display: block; }
+
+.pswp--fs .pswp__button--fs {
+  background-position: -44px 0; }
+
+.pswp__button--zoom {
+  display: none;
+  background-position: -88px 0; }
+
+.pswp--zoom-allowed .pswp__button--zoom {
+  display: block; }
+
+.pswp--zoomed-in .pswp__button--zoom {
+  background-position: -132px 0; }
+
+/* no arrows on touch screens */
+.pswp--touch .pswp__button--arrow--left,
+.pswp--touch .pswp__button--arrow--right {
+  visibility: hidden; }
+
+/*
+	Arrow buttons hit area
+	(icon is added to :before pseudo-element)
+*/
+.pswp__button--arrow--left,
+.pswp__button--arrow--right {
+  background: none;
+  top: 50%;
+  margin-top: -50px;
+  width: 70px;
+  height: 100px;
+  position: absolute; }
+
+.pswp__button--arrow--left {
+  left: 0; }
+
+.pswp__button--arrow--right {
+  right: 0; }
+
+.pswp__button--arrow--left:before,
+.pswp__button--arrow--right:before {
+  content: '';
+  top: 35px;
+  background-color: rgba(0, 0, 0, 0.3);
+  height: 30px;
+  width: 32px;
+  position: absolute; }
+
+.pswp__button--arrow--left:before {
+  left: 6px;
+  background-position: -138px -44px; }
+
+.pswp__button--arrow--right:before {
+  right: 6px;
+  background-position: -94px -44px; }
+
+/*
+
+	2. Share modal/popup and links
+
+ */
+.pswp__counter,
+.pswp__share-modal {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+.pswp__share-modal {
+  display: block;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  position: absolute;
+  z-index: 1600;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  -webkit-backface-visibility: hidden;
+  will-change: opacity; }
+
+.pswp__share-modal--hidden {
+  display: none; }
+
+.pswp__share-tooltip {
+  z-index: 1620;
+  position: absolute;
+  background: #FFF;
+  top: 56px;
+  border-radius: 2px;
+  display: block;
+  width: auto;
+  right: 44px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  -webkit-transform: translateY(6px);
+  transform: translateY(6px);
+  transition: -webkit-transform 0.25s;
+  transition: transform 0.25s;
+  transition: transform 0.25s, -webkit-transform 0.25s;
+  -webkit-backface-visibility: hidden;
+  will-change: transform; }
+
+.pswp__share-tooltip a {
+  display: block;
+  padding: 8px 12px;
+  color: #000;
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 18px; }
+
+.pswp__share-tooltip a:hover {
+  text-decoration: none;
+  color: #000; }
+
+.pswp__share-tooltip a:first-child {
+  /* round corners on the first/last list item */
+  border-radius: 2px 2px 0 0; }
+
+.pswp__share-tooltip a:last-child {
+  border-radius: 0 0 2px 2px; }
+
+.pswp__share-modal--fade-in {
+  opacity: 1; }
+
+.pswp__share-modal--fade-in .pswp__share-tooltip {
+  -webkit-transform: translateY(0);
+  transform: translateY(0); }
+
+/* increase size of share links on touch devices */
+.pswp--touch .pswp__share-tooltip a {
+  padding: 16px 12px; }
+
+a.pswp__share--facebook:before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: -12px;
+  right: 15px;
+  border: 6px solid transparent;
+  border-bottom-color: #FFF;
+  -webkit-pointer-events: none;
+  -moz-pointer-events: none;
+  pointer-events: none; }
+
+a.pswp__share--facebook:hover {
+  background: #3E5C9A;
+  color: #FFF; }
+
+a.pswp__share--facebook:hover:before {
+  border-bottom-color: #3E5C9A; }
+
+a.pswp__share--twitter:hover {
+  background: #55ACEE;
+  color: #FFF; }
+
+a.pswp__share--pinterest:hover {
+  background: #CCC;
+  color: #CE272D; }
+
+a.pswp__share--download:hover {
+  background: #DDD; }
+
+/*
+
+	3. Index indicator ("1 of X" counter)
+
+ */
+.pswp__counter {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 44px;
+  font-size: 13px;
+  line-height: 44px;
+  color: #FFF;
+  opacity: 0.75;
+  padding: 0 10px; }
+
+/*
+	
+	4. Caption
+
+ */
+.pswp__caption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  min-height: 44px; }
+
+.pswp__caption small {
+  font-size: 11px;
+  color: #BBB; }
+
+.pswp__caption__center {
+  text-align: left;
+  max-width: 420px;
+  margin: 0 auto;
+  font-size: 13px;
+  padding: 10px;
+  line-height: 20px;
+  color: #CCC; }
+
+.pswp__caption--empty {
+  display: none; }
+
+/* Fake caption element, used to calculate height of next/prev image */
+.pswp__caption--fake {
+  visibility: hidden; }
+
+/*
+
+	5. Loading indicator (preloader)
+
+	You can play with it here - http://codepen.io/dimsemenov/pen/yyBWoR
+
+ */
+.pswp__preloader {
+  width: 44px;
+  height: 44px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -22px;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  will-change: opacity;
+  direction: ltr; }
+
+.pswp__preloader__icn {
+  width: 20px;
+  height: 20px;
+  margin: 12px; }
+
+.pswp__preloader--active {
+  opacity: 1; }
+
+.pswp__preloader--active .pswp__preloader__icn {
+  /* We use .gif in browsers that don't support CSS animation */
+  background: url(data:image/gif;base64,R0lGODlhFAAUAPMIAIeHhz8/P1dXVycnJ8/Pz7e3t5+fn29vb////wAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFBwAIACwAAAAAFAAUAEAEUxDJSatFxtwaggWAdIyHJAhXoRYSQUhDPGx0TbmujahbXGWZWqdDAYEsp5NupLPkdDwE7oXwWVasimzWrAE1tKFHErQRK8eL8mMUlRBJVI307uoiACH5BAUHAAgALAEAAQASABIAAAROEMkpS6E4W5upMdUmEQT2feFIltMJYivbvhnZ3R0A4NMwIDodz+cL7nDEn5CH8DGZh8MtEMBEoxkqlXKVIgQCibbK9YLBYvLtHH5K0J0IACH5BAUHAAgALAEAAQASABIAAAROEMkpjaE4W5spANUmFQX2feFIltMJYivbvhnZ3d1x4BNBIDodz+cL7nDEn5CH8DGZAsFtMMBEoxkqlXKVIgIBibbK9YLBYvLtHH5K0J0IACH5BAUHAAgALAEAAQASABIAAAROEMkpAaA4W5vpOdUmGQb2feFIltMJYivbvhnZ3Z0g4FNRIDodz+cL7nDEn5CH8DGZgcCNQMBEoxkqlXKVIgYDibbK9YLBYvLtHH5K0J0IACH5BAUHAAgALAEAAQASABIAAAROEMkpz6E4W5upENUmAQD2feFIltMJYivbvhnZ3V0Q4JNhIDodz+cL7nDEn5CH8DGZg8GtUMBEoxkqlXKVIggEibbK9YLBYvLtHH5K0J0IACH5BAUHAAgALAEAAQASABIAAAROEMkphaA4W5tpCNUmHQf2feFIltMJYivbvhnZ3d0w4BMAIDodz+cL7nDEn5CH8DGZBMLNYMBEoxkqlXKVIgoFibbK9YLBYvLtHH5K0J0IACH5BAUHAAgALAEAAQASABIAAAROEMkpQ6A4W5vpGNUmCQL2feFIltMJYivbvhnZ3R1B4NNxIDodz+cL7nDEn5CH8DGZhcINAMBEoxkqlXKVIgwGibbK9YLBYvLtHH5K0J0IACH5BAUHAAcALAEAAQASABIAAANCeLo6wzA6FxkhbaoQ4L3ZxnXLh0EjWZ4RV71VUcCLIByyTNt2PsO8m452sBGJBsNxkUwuD03lAQBASqnUJ7aq5UYSADs=) 0 0 no-repeat; }
+
+.pswp--css_animation .pswp__preloader--active {
+  opacity: 1; }
+
+.pswp--css_animation .pswp__preloader--active .pswp__preloader__icn {
+  -webkit-animation: clockwise 500ms linear infinite;
+  animation: clockwise 500ms linear infinite; }
+
+.pswp--css_animation .pswp__preloader--active .pswp__preloader__donut {
+  -webkit-animation: donut-rotate 1000ms cubic-bezier(0.4, 0, 0.22, 1) infinite;
+  animation: donut-rotate 1000ms cubic-bezier(0.4, 0, 0.22, 1) infinite; }
+
+.pswp--css_animation .pswp__preloader__icn {
+  background: none;
+  opacity: 0.75;
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  margin: 0; }
+
+.pswp--css_animation .pswp__preloader__cut {
+  /* 
+			The idea of animating inner circle is based on Polymer ("material") loading indicator 
+			 by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html
+		*/
+  position: relative;
+  width: 7px;
+  height: 14px;
+  overflow: hidden; }
+
+.pswp--css_animation .pswp__preloader__donut {
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #FFF;
+  border-radius: 50%;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: none;
+  margin: 0; }
+
+@media screen and (max-width: 1024px) {
+  .pswp__preloader {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0;
+    float: right; } }
+
+@-webkit-keyframes clockwise {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@keyframes clockwise {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@-webkit-keyframes donut-rotate {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0); }
+  50% {
+    -webkit-transform: rotate(-140deg);
+    transform: rotate(-140deg); }
+  100% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0); } }
+
+@keyframes donut-rotate {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0); }
+  50% {
+    -webkit-transform: rotate(-140deg);
+    transform: rotate(-140deg); }
+  100% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0); } }
+
+/*
+	
+	6. Additional styles
+
+ */
+/* root element of UI */
+.pswp__ui {
+  -webkit-font-smoothing: auto;
+  visibility: visible;
+  opacity: 1;
+  z-index: 1550; }
+
+/* top black bar with buttons and "1 of X" indicator */
+.pswp__top-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 44px;
+  width: 100%; }
+
+.pswp__caption,
+.pswp__top-bar,
+.pswp--has_mouse .pswp__button--arrow--left,
+.pswp--has_mouse .pswp__button--arrow--right {
+  -webkit-backface-visibility: hidden;
+  will-change: opacity;
+  transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+
+/* pswp--has_mouse class is added only when two subsequent mousemove events occur */
+.pswp--has_mouse .pswp__button--arrow--left,
+.pswp--has_mouse .pswp__button--arrow--right {
+  visibility: visible; }
+
+.pswp__top-bar,
+.pswp__caption {
+  background-color: rgba(0, 0, 0, 0.5); }
+
+/* pswp__ui--fit class is added when main image "fits" between top bar and bottom bar (caption) */
+.pswp__ui--fit .pswp__top-bar,
+.pswp__ui--fit .pswp__caption {
+  background-color: rgba(0, 0, 0, 0.3); }
+
+/* pswp__ui--idle class is added when mouse isn't moving for several seconds (JS option timeToIdle) */
+.pswp__ui--idle .pswp__top-bar {
+  opacity: 0; }
+
+.pswp__ui--idle .pswp__button--arrow--left,
+.pswp__ui--idle .pswp__button--arrow--right {
+  opacity: 0; }
+
+/*
+	pswp__ui--hidden class is added when controls are hidden
+	e.g. when user taps to toggle visibility of controls
+*/
+.pswp__ui--hidden .pswp__top-bar,
+.pswp__ui--hidden .pswp__caption,
+.pswp__ui--hidden .pswp__button--arrow--left,
+.pswp__ui--hidden .pswp__button--arrow--right {
+  /* Force paint & create composition layer for controls. */
+  opacity: 0.001; }
+
+/* pswp__ui--one-slide class is added when there is just one item in gallery */
+.pswp__ui--one-slide .pswp__button--arrow--left,
+.pswp__ui--one-slide .pswp__button--arrow--right,
+.pswp__ui--one-slide .pswp__counter {
+  display: none; }
+
+.pswp__element--disabled {
+  display: none !important; }
+
+.pswp--minimal--dark .pswp__top-bar {
+  background: none; }
+</style><style type="text/css">.omyu.tnm_schedule #schedule {
+  padding: 0px 30px 20px; }
+
+.omyu.tnm_schedule .gaming {
+  color: #2E59AE; }
+
+.omyu.tnm_schedule table.school-table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0; }
+  .omyu.tnm_schedule table.school-table caption {
+    padding-left: 1em;
+    line-height: 2;
+    font-size: 100%;
+    vertical-align: middle;
+    text-align: left; }
+  .omyu.tnm_schedule table.school-table th {
+    padding: 0.5em 0.2em;
+    border: 1px solid #c9c9c9;
+    line-height: 1.2;
+    font-size: 100%;
+    color: #363f42;
+    background-color: #e3e3e3;
+    text-align: center;
+    vertical-align: middle; }
+  .omyu.tnm_schedule table.school-table tr:nth-child(2n+1) {
+    background: #F1F6F9; }
+  .omyu.tnm_schedule table.school-table td {
+    padding: 0.5em 0.2em;
+    border: 1px solid #c9c9c9;
+    line-height: 1.2;
+    font-size: 100%;
+    text-align: center;
+    vertical-align: middle; }
+    .omyu.tnm_schedule table.school-table td.day {
+      background: #fff; }
+    .omyu.tnm_schedule table.school-table td a {
+      text-decoration: none;
+      white-space: nowrap; }
+      .omyu.tnm_schedule table.school-table td a:hover {
+        text-decoration: underline; }
+  .omyu.tnm_schedule table.school-table tr {
+    width: 100%; }
+  .omyu.tnm_schedule table.school-table.todayGames tr:first-child {
+    display: none; }
+  .omyu.tnm_schedule table.school-table.todayGames .team {
+    width: 25%; }
+  .omyu.tnm_schedule table.school-table.todayGames .gameStatus {
+    width: 20%; }
+  .omyu.tnm_schedule table.school-table.todayGames .stadiumName {
+    white-space: normal; }
+  .omyu.tnm_schedule table.school-table.allGames .day {
+    width: 19%; }
+  .omyu.tnm_schedule table.school-table.allGames .game {
+    width: 7%; }
+  .omyu.tnm_schedule table.school-table.allGames .team {
+    width: 18%; }
+  .omyu.tnm_schedule table.school-table.allGames .data {
+    width: 10%; }
+  .omyu.tnm_schedule table.school-table.allGames .stadiumName {
+    width: 28%; }
+
+.omyu.tnm_schedule.v_okayama table.school-table th {
+  background-color: #0b0676;
+  color: #fff; }
+
+.omyu.tnm_schedule.v_okayama table.school-table.soft th {
+  background-color: #ff8c8c; }
+
+@media only screen and (max-width: 799px) {
+  .omyu.tnm_schedule #schedule {
+    padding: 0 0 10px; }
+  .omyu.tnm_schedule table.school-table {
+    margin: 15px 0; }
+    .omyu.tnm_schedule table.school-table caption {
+      font-size: 12px;
+      font-weight: bold; }
+    .omyu.tnm_schedule table.school-table th {
+      padding: 4px 0 3px;
+      line-height: 1.4em;
+      font-size: 11px;
+      border-top: 1px solid #AFBDCB;
+      border-right: 1px solid #AFBDCB;
+      border-bottom: 1px solid #AFBDCB; }
+    .omyu.tnm_schedule table.school-table td {
+      padding: 5px 2px;
+      line-height: 1.6em;
+      font-size: 13px;
+      border-right: 1px solid #C6D7E7;
+      border-bottom: 1px solid #C6D7E7; }
+    .omyu.tnm_schedule table.school-table td:first-child {
+      border-left: 1px solid #C6D7E7; }
+    .omyu.tnm_schedule table.school-table.todayGames tr:nth-child(2) td {
+      border-top: 1px solid #C6D7E7; }
+    .omyu.tnm_schedule table.school-table.allGames .day {
+      width: 14%; }
+    .omyu.tnm_schedule table.school-table.allGames .team {
+      width: 22%; }
+    .omyu.tnm_schedule table.school-table.allGames .stadiumName {
+      width: 25% !important; } }
+
+.omyu.tnm_tournament #tournament {
+  padding: 0px 30px 20px; }
+
+.omyu.tnm_tournament #tournamentImg {
+  width: 100%; }
+
+.omyu.tnm_tournament .tournamentTxt {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 12px;
+  color: #666; }
+
+.omyu.tnm_tournament .yaguWrap img {
+  width: 100%;
+  height: auto; }
+
+.omyu.tnm_tournament .svg {
+  display: block;
+  width: 100%;
+  background: white; }
+
+@media only screen and (max-width: 799px) {
+  .omyu.tnm_tournament #tournament {
+    padding: 0 0 10px; }
+  .omyu.tnm_tournament .tournamentTxt {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 10px; } }
+
+.omyu.tnm_team #team {
+  padding: 0px 30px 20px; }
+
+.omyu.tnm_team table.team-table {
+  width: 100%;
+  margin: 20px 0; }
+  .omyu.tnm_team table.team-table td {
+    padding: 0.5em 1em;
+    border: none;
+    border-bottom: 1px dotted #ddd;
+    line-height: 1.4;
+    font-size: 100%;
+    text-align: left;
+    vertical-align: middle; }
+    .omyu.tnm_team table.team-table td a {
+      text-decoration: none; }
+      .omyu.tnm_team table.team-table td a:hover {
+        text-decoration: underline; }
+
+@media only screen and (max-width: 799px) {
+  .omyu.tnm_team #team {
+    padding: 0 0 10px; }
+  .omyu.tnm_team table.team-table {
+    margin: 15px 0; }
+    .omyu.tnm_team table.team-table td {
+      font-size: 90%;
+      line-height: 1.2; } }
+
+.omyu {
+  background-color: #fff;
+  max-width: 1280px;
+  min-width: 600px;
+  margin: 20px auto; }
+  .omyu h2.title {
+    padding: 15px 0;
+    margin: 0;
+    background-color: #1d2257;
+    font-size: 18px;
+    color: #fff;
+    font-weight: bold;
+    text-align: center; }
+  .omyu .menu ul {
+    width: 100%;
+    padding: 30px 0 0;
+    letter-spacing: -0.4em;
+    list-style: none; }
+    .omyu .menu ul li {
+      display: inline-block;
+      width: 33.3%;
+      text-align: center;
+      letter-spacing: normal;
+      vertical-align: top; }
+      .omyu .menu ul li a {
+        display: block;
+        background: transparent;
+        margin: 0;
+        padding: 0 0 14px;
+        width: 100%;
+        font-size: 16px;
+        color: #666;
+        text-decoration: none;
+        border-bottom: solid 1px #ccc;
+        transition: color 0.2s; }
+      .omyu .menu ul li.current a {
+        padding: 0 0 12px;
+        color: #1d2257;
+        border-bottom: solid 3px #1d2257; }
+  .omyu .copyright {
+    float: right;
+    text-align: right; }
+  .omyu.v_okayama {
+    padding-top: 20px; }
+    .omyu.v_okayama h2.title {
+      margin: 0 30px;
+      background-color: #0b0676; }
+      .omyu.v_okayama h2.title.soft {
+        background-color: #ff8c8c; }
+  @media only screen and (max-width: 799px) {
+    .omyu {
+      min-width: auto;
+      margin: 10px auto; }
+      .omyu h2.title {
+        padding: 10px 0;
+        font-size: 16px; }
+      .omyu .menu ul {
+        padding-top: 15px; }
+        .omyu .menu ul li a {
+          font-size: 12px; }
+      .omyu .copyright {
+        font-size: 70%; }
+      .omyu.v_okayama {
+        padding-top: 0; }
+        .omyu.v_okayama h2.title {
+          margin: 0; } }
+</style><!--UIPATH_EXTENSION_ID: hmpkmollbbcoopahpbplbdaapacncbbc--></head>
+<body style="">
+<header>
+	<div class="inner">
+		<h1><a href="https://pridejapan.net/pjtoyama/index.html"></a></h1>
+		<div class="spMenuWrap">
+			<div id="spMenu"><span id="navBtn"><span id="navBtnIcon"></span></span></div>
+		</div>
+		<nav class="gnav">
+			<ul>
+				<li><a href="https://pridejapan.net/pjtoyama/index.html">ホーム</a></li>
+				<li><a href="https://pridejapan.net/pjtoyama/index.html#information">大会概要</a></li>
+				<li><a href="https://pridejapan.net/pjtoyama/index.html#Game%20rules">大会規定</a></li>
+				<li><a href="https://pridejapan.net/pjtoyama/index.html#schedule">試合日程/結果</a>
+				</li><li><a href="http://pridejapan.net/script/mailform/toyama_entry/">エントリー</a></li>
+				<li><a href="http://pridejapan.net/script/mailform/toyama_contact/">お問い合わせ</a></li>
+							</ul>
+		</nav>
+	</div>
+</header>
+<div style="text-align:center;margin:5px;">
+<div class="slide" style="padding-bottom: 0px;">
+	<ul class="slideInner" style="height: 898px;">
+		<li style="height: 898px;"><img src="./index_files/toyamatop.jpg" alt=""></li>
+	</ul>
+</div>
+</div>
+<div id="contents">
+	<h2>お知らせ</h2>
+	<dl class="information"></dl>
+		<dt>2025-08-18</dt>
+		<dd>PRIDEJAPAN全国選抜学童軟式野球2025富山大会 東京都代表・旗の台クラブが2年連続優勝を飾りました。おめでとうございます！</dd>
+
+		<dt>2025-07-02</dt>
+		<dd>PRIDEJAPAN全国選抜学童軟式野球2025富山大会 記念グッズの後日販売を開始いたしました。<br>
+		<a href="https://baseballmarket.shop-pro.jp/?mode=cate&amp;cbid=2777813&amp;csid=11">販売専用サイトはこちらから</a></dd>
+
+		<dt>2025-07-15</dt>
+		<dd>PRIDEJAPAN全国選抜学童軟式野球2025富山大会 グループリーグ組合せを発表しました。</dd>
+		
+		
+		<dt>2025-07-02</dt>
+		<dd>PRIDEJAPAN全国選抜学童軟式野球2025富山大会 記念グッズを販売開始いたしました。<br>
+		<a href="https://baseballmarket.shop-pro.jp/?mode=cate&amp;cbid=2777813&amp;csid=11">販売専用サイトはこちらから</a></dd>
+		
+		<dt>2025-05-15</dt>
+		<dd>宿泊募集パンフレット及び宿泊施設情報の資料を大会概要欄に掲載開始いたしました。</dd>
+
+
+
+	
+
+<div class="omyu tnm_schedule v_omyu">
+  <script class="omyu" src="./index_files/omyu_tnm_schedule.js.ダウンロード" charset="utf-8"></script>
+  <script class="omyu">omyu.renderContent("14", "20250002281");</script><h2 class="title soft">PRIDE JAPAN全国選抜学童野球2025富山大会　予選リーグ</h2><div id="schedule">
+                <nav class="menu">
+                    <ul>
+                        <li class="current"><a href="https://pridejapan.net/pjtoyama/index.html?oytype=S">日程・結果</a></li>
+                        <li class=""><a href="https://pridejapan.net/pjtoyama/index.html?oytype=T">勝ち上がり表</a></li>
+                        <li class=""><a href="https://pridejapan.net/pjtoyama/index.html?oytype=M">参加チーム</a></li>
+                    </ul>
+                </nav>
+            
+            <table border="0" id="resultChikuTbl" class="school-table allGames soft" summary="地区大会の日程と結果">
+        
+                <tbody>
+                    <tr>
+                        <th scope="col" class="day" abbr="月日">月日</th>
+                        <th scope="col" class="game" abbr="試合">試合</th>
+                        <th scope="col" class="card" colspan="3" abbr="試合">対戦カード</th>
+                        <th scope="col" class="stadiumName" abbr="対戦カード">球場</th>
+                    </tr>                                
+        
+                        <tr>
+                
+                            <td rowspan="16" class="day">8月15日 (金)</td>
+                        
+                            <td class="game">1</td>
+                            <td class="team">青森レッドロイヤルズ<br>（青森）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20257843004" target="_blank">
+                                        0－10
+                                    </a>
+                                </td>
+                    
+                            <td class="team">五個荘野球スポーツ少年団<br>（滋賀）</td>
+                            <td class="stadiumName">大沢野総合運動公園</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">2</td>
+                            <td class="team">立待ソルジャーズ<br>（福井）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20255513060" target="_blank">
+                                        6－2
+                                    </a>
+                                </td>
+                    
+                            <td class="team">永源寺リトルスターズ<br>（滋賀）</td>
+                            <td class="stadiumName">五福公園野球広場B面</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">3</td>
+                            <td class="team">松任若体スーパースターズ<br>（石川）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20250813966" target="_blank">
+                                        7－8
+                                    </a>
+                                </td>
+                    
+                            <td class="team">三笠スピリッツ<br>（北海道）</td>
+                            <td class="stadiumName">有金野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">4</td>
+                            <td class="team">日高レッツ<br>（愛知）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20254163971" target="_blank">
+                                        1－9
+                                    </a>
+                                </td>
+                    
+                            <td class="team">長地ファイヤードラゴンズ<br>（長野）</td>
+                            <td class="stadiumName">県営新港の森野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">5</td>
+                            <td class="team">野川レッドパワーズ<br>（神奈川）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20250493653" target="_blank">
+                                        12－2
+                                    </a>
+                                </td>
+                    
+                            <td class="team">岡屋スポーツ少年団<br>（京都）</td>
+                            <td class="stadiumName">大沢野総合運動公園</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">6</td>
+                            <td class="team">嘉田生野球スポーツ少年団<br>（茨城）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20250262088" target="_blank">
+                                        1－5
+                                    </a>
+                                </td>
+                    
+                            <td class="team">清水町ドリームキッド<br>（静岡）</td>
+                            <td class="stadiumName">五福公園野球広場B面</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">7</td>
+                            <td class="team">生馬学童野球クラブ<br>（島根）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20259267070" target="_blank">
+                                        4－1
+                                    </a>
+                                </td>
+                    
+                            <td class="team">南草津ドラゴンズ<br>（滋賀）</td>
+                            <td class="stadiumName">有金野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">8</td>
+                            <td class="team">日高レッツ<br>（愛知）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20252684654" target="_blank">
+                                        1－4
+                                    </a>
+                                </td>
+                    
+                            <td class="team">四宮ボンバーズ<br>（大阪）</td>
+                            <td class="stadiumName">県営新港の森野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">9</td>
+                            <td class="team">河西ジュニアーズ<br>（滋賀）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20254439298" target="_blank">
+                                        2－4
+                                    </a>
+                                </td>
+                    
+                            <td class="team">小矢部JBC<br>（富山）</td>
+                            <td class="stadiumName">大沢野総合運動公園</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">10</td>
+                            <td class="team">大阪オールスターズJr.<br>（大阪）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20256522348" target="_blank">
+                                        8－1
+                                    </a>
+                                </td>
+                    
+                            <td class="team">オール富山少年野球クラブ<br>（富山）</td>
+                            <td class="stadiumName">五福公園野球広場B面</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">11</td>
+                            <td class="team">SCユナイテッド<br>（滋賀）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20259833489" target="_blank">
+                                        3－4
+                                    </a>
+                                </td>
+                    
+                            <td class="team">福光JBC<br>（富山）</td>
+                            <td class="stadiumName">有金野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">12</td>
+                            <td class="team">マツザキガーデンジュニアスポーツ少年団<br>（福島）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20256792794" target="_blank">
+                                        17－5
+                                    </a>
+                                </td>
+                    
+                            <td class="team">秦荘スポーツ少年団野球部<br>（滋賀）</td>
+                            <td class="stadiumName">県営新港の森野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">13</td>
+                            <td class="team">下関ドリームス<br>（山口）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20253135689" target="_blank">
+                                        2－9
+                                    </a>
+                                </td>
+                    
+                            <td class="team">今津ファイターズ<br>（兵庫）</td>
+                            <td class="stadiumName">大沢野総合運動公園</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">14</td>
+                            <td class="team">国立ヤングスワローズ<br>（東京）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20252205881" target="_blank">
+                                        1－3
+                                    </a>
+                                </td>
+                    
+                            <td class="team">プライド愛知<br>（愛知）</td>
+                            <td class="stadiumName">五福公園野球広場B面</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">15</td>
+                            <td class="team">旗岡スポーツ少年団<br>（山口）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20259259564" target="_blank">
+                                        2－10
+                                    </a>
+                                </td>
+                    
+                            <td class="team">旗の台クラブ<br>（東京）</td>
+                            <td class="stadiumName">有金野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">16</td>
+                            <td class="team">大住クラブ<br>（京都）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20252126460" target="_blank">
+                                        6－0
+                                    </a>
+                                </td>
+                    
+                            <td class="team">ASAI KIDS☆UNITED<br>（千葉）</td>
+                            <td class="stadiumName">県営新港の森野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td rowspan="15" class="day">8月16日 (土)</td>
+                        
+                            <td class="game">17</td>
+                            <td class="team">ASAI KIDS☆UNITED<br>（千葉）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20257990542" target="_blank">
+                                        9－0
+                                    </a>
+                                </td>
+                    
+                            <td class="team">秦荘スポーツ少年団野球部<br>（滋賀）</td>
+                            <td class="stadiumName">大沢野総合運動公園</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">18</td>
+                            <td class="team">今津ファイターズ<br>（兵庫）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20256513006" target="_blank">
+                                        9－0
+                                    </a>
+                                </td>
+                    
+                            <td class="team">小矢部JBC<br>（富山）</td>
+                            <td class="stadiumName">有金野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">19</td>
+                            <td class="team">旗の台クラブ<br>（東京）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20255908230" target="_blank">
+                                        8－1
+                                    </a>
+                                </td>
+                    
+                            <td class="team">福光JBC<br>（富山）</td>
+                            <td class="stadiumName">県営新港の森野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">20</td>
+                            <td class="team">プライド愛知<br>（愛知）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20254139671" target="_blank">
+                                        8－6
+                                    </a>
+                                </td>
+                    
+                            <td class="team">オール富山少年野球クラブ<br>（富山）</td>
+                            <td class="stadiumName">丸山総合公園野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">21</td>
+                            <td class="team">大住クラブ<br>（京都）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20259042642" target="_blank">
+                                        6－6
+                                    </a>
+                                </td>
+                    
+                            <td class="team">マツザキガーデンジュニアスポーツ少年団<br>（福島）</td>
+                            <td class="stadiumName">大沢野総合運動公園</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">22</td>
+                            <td class="team">下関ドリームス<br>（山口）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20256449491" target="_blank">
+                                        12－5
+                                    </a>
+                                </td>
+                    
+                            <td class="team">河西ジュニアーズ<br>（滋賀）</td>
+                            <td class="stadiumName">有金野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">23</td>
+                            <td class="team">旗岡スポーツ少年団<br>（山口）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20252097907" target="_blank">
+                                        7－1
+                                    </a>
+                                </td>
+                    
+                            <td class="team">SCユナイテッド<br>（滋賀）</td>
+                            <td class="stadiumName">県営新港の森野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">24</td>
+                            <td class="team">国立ヤングスワローズ<br>（東京）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20253779383" target="_blank">
+                                        3－5
+                                    </a>
+                                </td>
+                    
+                            <td class="team">大阪オールスターズJr.<br>（大阪）</td>
+                            <td class="stadiumName">丸山総合公園野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">25</td>
+                            <td class="team">四宮ボンバーズ<br>（大阪）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20257494765" target="_blank">
+                                        1－14
+                                    </a>
+                                </td>
+                    
+                            <td class="team">長地ファイヤードラゴンズ<br>（長野）</td>
+                            <td class="stadiumName">大沢野総合運動公園</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">26</td>
+                            <td class="team">岡屋スポーツ少年団<br>（京都）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20259148972" target="_blank">
+                                        10－7
+                                    </a>
+                                </td>
+                    
+                            <td class="team">五個荘野球スポーツ少年団<br>（滋賀）</td>
+                            <td class="stadiumName">有金野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">27</td>
+                            <td class="team">南草津ドラゴンズ<br>（滋賀）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20259246446" target="_blank">
+                                        6－9
+                                    </a>
+                                </td>
+                    
+                            <td class="team">三笠スピリッツ<br>（北海道）</td>
+                            <td class="stadiumName">県営新港の森野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">28</td>
+                            <td class="team">清水町ドリームキッド<br>（静岡）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20251234090" target="_blank">
+                                        11－3
+                                    </a>
+                                </td>
+                    
+                            <td class="team">永源寺リトルスターズ<br>（滋賀）</td>
+                            <td class="stadiumName">丸山総合公園野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">29</td>
+                            <td class="team">野川レッドパワーズ<br>（神奈川）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20254882115" target="_blank">
+                                        19－0
+                                    </a>
+                                </td>
+                    
+                            <td class="team">青森レッドロイヤルズ<br>（青森）</td>
+                            <td class="stadiumName">有金野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">30</td>
+                            <td class="team">生馬学童野球クラブ<br>（島根）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20258214553" target="_blank">
+                                        7－3
+                                    </a>
+                                </td>
+                    
+                            <td class="team">松任若体スーパースターズ<br>（石川）</td>
+                            <td class="stadiumName">県営新港の森野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">31</td>
+                            <td class="team">嘉田生野球スポーツ少年団<br>（茨城）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20259226782" target="_blank">
+                                        4－3
+                                    </a>
+                                </td>
+                    
+                            <td class="team">立待ソルジャーズ<br>（福井）</td>
+                            <td class="stadiumName">丸山総合公園野球場</td>
+                
+                        </tr>
+                
+                </tbody>
+            </table>    
+        
+            <p class="copyright">データ協力：Omyu Technology株式会社</p>        
+        
+            <iframe src="./index_files/tnm_schedule.html" width="0" height="0" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>         
+        </div>
+</div>　　　　　　　　　　　　　　　　　　　　　　　　　　　
+
+<div class="omyu tnm_schedule v_omyu">
+  <script class="omyu" src="./index_files/omyu_tnm_schedule.js.ダウンロード" charset="utf-8"></script>
+  <script class="omyu">omyu.renderContent("14", "20250002280");</script><h2 class="title soft">PRIDE JAPAN全国選抜学童野球2025富山大会　決勝トーナメント</h2><div id="schedule">
+                <nav class="menu">
+                    <ul>
+                        <li class="current"><a href="https://pridejapan.net/pjtoyama/index.html?oytype=S">日程・結果</a></li>
+                        <li class=""><a href="https://pridejapan.net/pjtoyama/index.html?oytype=T">勝ち上がり表</a></li>
+                        <li class=""><a href="https://pridejapan.net/pjtoyama/index.html?oytype=M">参加チーム</a></li>
+                    </ul>
+                </nav>
+            
+            <table border="0" id="resultChikuTbl" class="school-table allGames soft" summary="地区大会の日程と結果">
+        
+                <tbody>
+                    <tr>
+                        <th scope="col" class="day" abbr="月日">月日</th>
+                        <th scope="col" class="game" abbr="試合">試合</th>
+                        <th scope="col" class="card" colspan="3" abbr="試合">対戦カード</th>
+                        <th scope="col" class="stadiumName" abbr="対戦カード">球場</th>
+                    </tr>                                
+        
+                        <tr>
+                
+                            <td rowspan="4" class="day">8月17日 (日)</td>
+                        
+                            <td class="game">1</td>
+                            <td class="team">今津ファイターズ<br>（兵庫）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20252337728" target="_blank">
+                                        8－3
+                                    </a>
+                                </td>
+                    
+                            <td class="team">野川レッドパワーズ<br>（神奈川）</td>
+                            <td class="stadiumName">大沢野総合運動公園</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">2</td>
+                            <td class="team">旗の台クラブ<br>（東京）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20259188825" target="_blank">
+                                        7－4
+                                    </a>
+                                </td>
+                    
+                            <td class="team">生馬学童野球クラブ<br>（島根）</td>
+                            <td class="stadiumName">丸山総合公園野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">3</td>
+                            <td class="team">大阪オールスターズJr.<br>（大阪）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20253016109" target="_blank">
+                                        6－0
+                                    </a>
+                                </td>
+                    
+                            <td class="team">清水町ドリームキッド<br>（静岡）</td>
+                            <td class="stadiumName">大沢野総合運動公園</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">4</td>
+                            <td class="team">マツザキガーデンジュニアスポーツ少年団<br>（福島）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20251615593" target="_blank">
+                                        10－0
+                                    </a>
+                                </td>
+                    
+                            <td class="team">長地ファイヤードラゴンズ<br>（長野）</td>
+                            <td class="stadiumName">丸山総合公園野球場</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td rowspan="3" class="day">8月18日 (月)</td>
+                        
+                            <td class="game">5</td>
+                            <td class="team">大阪オールスターズJr.<br>（大阪）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20255850440" target="_blank">
+                                        3－0
+                                    </a>
+                                </td>
+                    
+                            <td class="team">今津ファイターズ<br>（兵庫）</td>
+                            <td class="stadiumName">富山市民球場アルペンスタジアム</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">6</td>
+                            <td class="team">マツザキガーデンジュニアスポーツ少年団<br>（福島）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20259321065" target="_blank">
+                                        1－8
+                                    </a>
+                                </td>
+                    
+                            <td class="team">旗の台クラブ<br>（東京）</td>
+                            <td class="stadiumName">富山市民球場アルペンスタジアム</td>
+                
+                        </tr>
+                
+                        <tr>
+                
+                            <td class="game">7</td>
+                            <td class="team">旗の台クラブ<br>（東京）</td>
+                
+                                <td class="data">
+                                    <a class="gaming" rel="noopener noreferrer" href="https://baseball.omyutech.com/CupHomePageSokuhou.action?gameId=20254128449" target="_blank">
+                                        7－5
+                                    </a>
+                                </td>
+                    
+                            <td class="team">大阪オールスターズJr.<br>（大阪）</td>
+                            <td class="stadiumName">富山市民球場アルペンスタジアム</td>
+                
+                        </tr>
+                
+                </tbody>
+            </table>    
+        
+            <p class="copyright">データ協力：Omyu Technology株式会社</p>        
+        
+            <iframe src="./index_files/tnm_schedule(1).html" width="0" height="0" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>         
+        </div>
+</div>
+
+	<h2>交流戦予定表</h2>
+	<div style="text-align:center;margin:5px;">
+									<a href="http://pridejapan.net/pjtoyama/%E5%AF%8C%E5%B1%B1%E5%A4%A7%E4%BC%9A2025%EF%BC%88%E4%BA%A4%E6%B5%81%E6%88%A6%E4%BA%88%E5%AE%9A%E8%A1%A8%EF%BC%89.pdf">交流戦予定はこちらをご確認ください。</a><br>
+	</div>
+
+						
+
+					<h2 id="information">大会概要<br><span>information</span></h2>
+											<table>
+											<tbody>
+											<tr>
+											<th>大会名</th>
+											<td>PRIDEJAPAN全国選抜学童軟式野球大会2025富山大会</td>
+											</tr>
+											<tr>
+											<th>主　催</th>
+											<td>全国軟式野球PRIDEJAPAN（プライドジャパン事務局）</td>
+											</tr>
+											<tr>
+											<th>後援</th>
+											<td>スポーツ庁、富山県、富山県スポーツ協会</td>
+											</tr>
+											<tr>
+											<th>協　賛</th>
+											<td>株式会社JTB、株式会社フォトクリエイト、ナガセケンコー株式会社、ゼット株式会社、カルビー株式会社</td>
+											</tr>
+											<tr>
+											<th>協　力</th>
+											<td>公益財団法人日本少年野球連盟・北陸支部審判部</td>
+											</tr>
+											<tr>
+											<th>参加資格</th>
+											<td>①大会本部より選抜または推薦されたチーム※事務局選考基準あり<br>
+												　<a href="http://pridejapan.net/pjtoyama/PJ%E5%85%A8%E5%9B%BD%E9%81%B8%E6%8A%9C%E5%AD%A6%E7%AB%A5%E8%BB%9F%E5%BC%8F%E9%87%8E%E7%90%83%E5%A4%A7%E4%BC%9A%E3%83%BB%E9%81%B8%E8%80%83%E5%9F%BA%E6%BA%96.pdf">PJ全国選抜学童軟式野球大会・選考基準</a>をご確認ください。<br>
+												②小学6年生以下で構成される学童軟式野球チーム（全国47都道府県対象）<br>
+											③チーム登録をする監督、コーチ、マネージャー、選手はJTBが指定する<br>
+										宿泊プランを必ず利用することとする。※保護者、ご家族は任意。<br>
+									※宿泊プランの詳細は宿泊要項をご覧ください。</td>
+											</tr>
+											<tr>
+											<th>推薦期間</th>
+											<td>2025年5月21日～　※出場上限チーム数に達し次第、応募締め切りとさせていただきます。</td>
+											</tr>
+											<tr>
+											<th>出場数</th>
+											<td>32チーム</td>
+											</tr>
+											<tr>
+											<th>大会日程</th>
+											<td>2025年8月15日（金）、16日（土）、17日（日）、18日（月）</td>
+											</tr>
+											<tr>
+											<th>形　式</th>
+											<td>予選リーグ及び決勝トーナメント方式<br>
+8月15日（金）予選リーグ第1節（1試合）<br>
+8月16日（土）予選リーグ第2節（1試合）<br>
+8月17日（日）準々決勝<br>
+8月18日（月）準決勝・決勝戦<br>
+<br>
+※予選リーグ敗退チームは事務局設定の交流戦に出場いただきます。<br>
+大会3日目：大会初日の敗退チーム同士による対戦　※事務局事前設定<br>
+大会4日目：希望チーム同士による対戦　※事務局調整<br>
+※交流戦は本戦で雨天順延があった場合はすべて中止と致します。<br>
+※交流戦は、対戦両チームから各2名の審判を担当いただく自主審判制とします。</td>
+											</tr>
+											<tr>
+											<th>開催地</th>
+											<td>富山県富山市及び近隣市町村の会場</td>
+											</tr>
+											<tr>
+											<th>会　場</th>
+											<td>富山市民球場・アルペンスタジアム（富山県富山市下飯野30-1）<br>
+											五福公園野球場〈県営富山野球場〉（富山県富山市五福５区1942）<br>
+											大沢野総合運動公園野球場・大沢野スタジアム（富山県富山市八木山650）<br>
+											有金野球場（富山県滑川市有金968）<br>
+										<!--富山県総合運動公園野球場（富山県富山市南中田368）<br>-->
+									五福公園野球広場（富山県富山市五福5区1942）<br>
+									県民公園新港の森野球場（富山県高岡市姫野2-2）<br>
+									丸山総合公園野球場（富山県中新川郡上市町堤谷11-5）</td>
+											</tr>
+											<tr>
+											<th>参加費</th>
+											<td>20,000円（税込）</td>
+											</tr>
+											<tr>
+											<th>組合せ</th>
+											<td>本部代理抽選にて決定（自動抽選）※7月15日（火）実施予定</td>
+											</tr>
+											<tr>
+											<th>審判員</th>
+											<td>公式審判員3～4人制（主催者手配）</td>
+											</tr>
+											<tr>
+											<th>使用球</th>
+											<td>ケンコーボールJ号（主催者手配）</td>
+											</tr>
+											<tr>
+											<th>開会式</th>
+											<td>開会式は実施いたしません。</td>
+										</tr>
+											<tr>
+											<th>表彰式</th>
+											<td>表彰式は決勝戦に出場する2チームにて決勝戦後に開催いたします。（20分程度）</td>
+										</tr>
+
+										<tr>
+											<th>予選リーグ形式</th>
+											<td>32チーム（8グループ×4チーム（予選リーグ2試合）を予定）<br>
+												リーグ戦の勝ち点制度　勝：3点　引分け：1点　負：0点<br>
+												リーグ戦の順位決定基準　優先順位順：①勝ち点　②得失点　③総得点　④総失点　⑤抽選<br>
+
+																	</td></tr><tr>
+																	</tr>
+											
+											<tr>
+											<th>表　彰</th>
+											<td>優勝チーム、準優勝チームへ賞品贈呈。活躍した選手に個人賞もあります。</td>
+											</tr>
+											<tr>
+											<th>お申込</th>
+											<td>参加については事務局選考基準がございます。<br>
+											詳細は、<a href="http://pridejapan.net/pjtoyama/PJ%E5%85%A8%E5%9B%BD%E9%81%B8%E6%8A%9C%E5%AD%A6%E7%AB%A5%E8%BB%9F%E5%BC%8F%E9%87%8E%E7%90%83%E5%A4%A7%E4%BC%9A%E3%83%BB%E9%81%B8%E8%80%83%E5%9F%BA%E6%BA%96.pdf">PJ全国選抜学童軟式野球大会・選考基準</a>をご確認ください。<br>
+											事務局による推薦、または自薦による事務局選考となります。<br>
+											自薦によるご参加希望のチーム様は、本大会サイトのトップページ上部にある「エントリー」からフォームに必要事項を入力後、送信ください。<br>
+											入力時に必ず、ご参加いただくチーム様の前年度を含む連盟市区町村大会や県大会、また連盟外の私設団体の大会等の実績を選考用にご記載ください。<br>
+											エントリーフォーム送信後、5日以内に事務局から選考結果のご連絡をさせていただきます。</td>
+											</tr>
+											<tr>
+											<th>宿泊要項</th>
+											<td>プライドジャパン事務局は、大会開催を通してスポーツツーリズムでの町おこし事業への協力と<br>
+												円滑な大会運営をするために、出場チームはJTBが指定する宿泊施設を必ず3泊4日利用することとさせていただきます。<br>
+										※宿泊先により、宿泊費は異なります。<br>
+										　<!--宿泊募集パンフレット及び宿泊施設詳細は5月下旬に掲載開始を予定しております。<br>-->
+
+										宿泊先一覧は以下【募集パンフレット】をご参照いただき、資料中記載の「野球大会トラベルデスク」（株式会社JTB所管）でお手続きください。<br>
+									<a href="http://pridejapan.net/pjtoyama/%E3%80%90%E3%81%8A%E6%89%8B%E7%B6%9A%E3%81%8D%E3%82%AC%E3%82%A4%E3%83%89%E3%80%91PRIDEJAPAN%E5%85%A8%E5%9B%BD%E9%81%B8%E6%8A%9C%E5%AD%A6%E7%AB%A5%E8%BB%9F%E5%BC%8F%E9%87%8E%E7%90%832025%E5%AF%8C%E5%B1%B1%E5%A4%A7%E4%BC%9A.pdf">まずはこちら【お手続きガイド】をご確認ください。<br>
+										
+									</a><a href="http://pridejapan.net/pjtoyama/%E3%80%90%E5%AE%BF%E6%B3%8A%E5%8B%9F%E9%9B%86%E3%83%91%E3%83%B3%E3%83%95%E3%83%AC%E3%83%83%E3%83%88%E3%80%91PRIDEJAPAN%E5%85%A8%E5%9B%BD%E9%81%B8%E6%8A%9C%E5%AD%A6%E7%AB%A5%E8%BB%9F%E5%BC%8F%E9%87%8E%E7%90%832025%E5%AF%8C%E5%B1%B1%E5%A4%A7%E4%BC%9A.pdf">【募集パンフレット】はこちら<br>
+
+									</a><a href="http://pridejapan.net/pjtoyama/%E3%80%90%E5%AE%BF%E6%B3%8A%E6%96%BD%E8%A8%AD%E6%83%85%E5%A0%B1%E3%80%91PRIDEJAPAN%E5%85%A8%E5%9B%BD%E9%81%B8%E6%8A%9C%E5%AD%A6%E7%AB%A5%E8%BB%9F%E5%BC%8F%E9%87%8E%E7%90%832025%E5%AF%8C%E5%B1%B1%E5%A4%A7%E4%BC%9A.pdf">パンフレット記載の宿泊施設の設備等詳細【宿泊施設情報】はこちら<br>
+									</a><a href="http://pridejapan.net/pjtoyama/%E3%80%90%E3%80%88%E5%88%A5%E7%B4%99%E3%80%89%E4%BA%A4%E9%80%9A%E6%89%8B%E6%AE%B5%E7%94%B3%E8%BE%BC%E6%9B%B8%E3%80%91PRIDEJAPAN%E5%85%A8%E5%9B%BD%E9%81%B8%E6%8A%9C%E5%AD%A6%E7%AB%A5%E8%BB%9F%E5%BC%8F%E9%87%8E%E7%90%832025%E5%AF%8C%E5%B1%B1%E5%A4%A7%E4%BC%9A.xlsx">交通手段のお申込みはこちら【〈別紙〉交通手段申込書】をご確認ください。
+
+							
+
+
+
+									</a></td>
+											</tr>
+											<tr>
+											<th>本部事務局</th>
+											<td>お問い合わせ先（プライドジャパン事務局）<br>
+											〒465-0041<br>
+											名古屋市名東区朝日が丘1-1勝野ビル3F<br>
+											電　話：<a href="tel:0527153557">０５２－７１５－３５５７</a>（受付時間　平日１０時～１７時）<br>
+											ＦＡＸ：０５２－７１５－３５５６<br>
+											メール：<a href="mailto:info@pridejapan.net">info@pridejapan.net</a></td>
+											</tr>
+											</tbody>
+											</table>
+							<h2 id="Convention rules">大会規定<br><span>Convention rules</span></h2>
+							<h3>参加資格他</h3>
+							<p>1.チーム参加資格<br>
+							（１）軟式野球チームであれば、連盟所属または非所属に関係なくご出場いただけます。（事務局推薦型・選考基準あり）<br>
+							（２）大会規約にのっとり、マナーを遵守したフェアプレーができること。</p>
+							<p>&nbsp;</p>
+
+							<p>2．グラウンドマナー<br>
+							（１）相手チームへの選手、審判員へのヤジは禁止とします。<br>
+							（２）審判員の指示に従う事。従わないチームは失格とします。<br>
+							（３）会場施設を破損した場合、修繕にかかる費用は当事者の負担とします。<br>
+							（４）その他大会規約に違反した行為が発覚した場合は、審判員及び事務局の判断で失格とする場合もあります。</p>
+							<p>&nbsp;</p>
+
+							<p>3．その他<br>
+							（１）大会中に発生した事故・傷害・トラブル・野球道具の損傷に関して、主催者は一切責任を負いません。<br>　　　※各チームで、スポーツ団体保険等の傷害保険等に必ず加入してください。<br>
+							（２）主催者からの諸連絡は、代表者に電話、メール、大会専用LINEグループ内で行います。<br>
+							（３）大会の運営に関して、当規約に明記されていない事項を決定しなければならない場合は、その決定は主催者が行います。</p>
+							<p>&nbsp;</p>
+
+							<h2 id="Game rules">試合規定<br><span>Game rules</span></h2>
+							<h3>試合規定・ルール等</h3>
+							<p>1．イニングについて<br>
+							6回制とします。ただし、後記の時間規程を優先する。<br>
+※試合開始後、80分に到達したイニングを最終回とする。ただし、後攻側チームの攻撃中に80分に到達し、その時点で後攻側攻撃チームが得点優位の場合に限り、次のイニングを最終回とする。（守り負けなし）<br>
+上記で、80分到達により次のイニングを最終回とした場合でも、コールド成立の場合は、コールド規定を優先する。</p>
+
+							<p>2．同点の場合<br>
+							リーグ戦：時間規定による終了もしくは6回終了時点で同点の場合は引き分け<br>
+決勝トーナメント：時間規定による終了もしくは6回終了時点で同点の場合は1イニング限定で特別延長を実施<br>
+なお、1イニングの特別延長でも勝敗が付かない場合は、抽選（じゃんけん）で勝敗を決定する。</p>
+
+							<p>3．特別ルール　※決勝トーナメントのみ適用<br>
+							最終回終了時点で同点の場合は1イニングのみ特別ルールを実施。<br>
+						※一死満塁、継続打者（走者は打者の前3走者とする）<br>
+					※特別ルールでも決着がつかない場合は、ジャンケンで勝敗を決める。<br>
+				※準決勝、決勝戦は勝敗決着まで特別ルールを継続いたします。</p>
+
+
+							<p>4．コールドゲーム<br>
+							以下の場合にコールドゲームを適用する。<br>
+①	3回終了時点10点差以上、4回終了時点以降7点差以上が生じた場合<br>
+②	4回終了以降（4回表終了以降で後攻側得点優位の場合含む）で降雨等により試合続行が不可能となった場合<br>
+③	試合開始後60分を経過し、雨天・日没等で試合続行が困難と審判が判断したもの。<br>
+<br></p>
+
+							<p>5．審判について<br>
+							審判員は2~4人制で、主催者で手配いたします。</p>
+
+							<p>6．用具<br>
+							・試合球はケンコーボールJ号を使用します。（主催者手配）<br>
+							・打者及び走者は、必ずヘルメットを着用してください。<br>
+							・金属バットは、市販されている規定品であることとします。<br>
+							　なお、審判団が天候上危険と判断した場合は、使用を禁止する場合もあります。<br>
+							・捕手は、マスク・レガ－ス・プロテクターを着用してください。</p>
+
+							<p>7．雨天時等の大会運営について<br>
+							（１）試合の開催・中止は、当日のグラウンドにて決定します。<br>
+							（２）大会の延期、変更が生じた場合は、主催者側からご連絡をいたします。<br>
+							（チームご連絡担当者が登録する、本大会用グループLINEにて対応いたします。）</p>
+
+							<p>8．その他<br>
+							・本ページに記載のない大会・試合規程については、最新年度版全日本軟式野球連盟・競技者必携に準ずる。<br>
+							・出場する試合では、各チーム1名のボールボーイ（選手またはチーム関係者（保護者等））をお願い致します。雑巾等ボール拭き用道具をご持参ください。<br>
+							※保護者がボールボーイを行う場合、ユニフォーム着用の必要はございません。<br>
+							・ランナーコーチは登録選手が行うものとする。<br>
+							・投手の球数制限及びイニング制限はありません。<br>
+							・指名打者（DH）制度は使用可能です。（大谷ルールは使用不可）。<br>
+							・試合会場へは、出場する試合の開始予定時刻の60分前までに到着してください。<br>
+							・試合ルール説明及び攻撃順決定を試合の開始予定時刻の40分前に行います。それまでにメンバー表をご準備ください。<br>
+							・試合開始時刻に選手が9名揃わなかったチームは、不戦敗となります。<br>
+							・各チームは自チーム控えを除き、メンバー表5部※チーム任意様式（本部用、審判用、相手チーム用、アナウンス用、スコアボード操作用）を提出してください。<br>
+							・グラウンド整備を含む試合会場の後片付けや、ファウルボール拾いは、両チーム協力の下行ってください。<br>
+						・大会参加中に発生する事故・けがや器物破損等に関しましては、各チームで加入していただいている保険にてご対応ください。<br>
+					　事故、けが、その他トラブルに関して、事務局は一切責任を負いません。※必ず損害賠償・傷害保険等にご加入ください。</p>
+
+<h2>過去大会はこちら<br><span>past tournament</span></h2>
+						<div class="twoCol">
+							<div class="inner">
+								<a href="https://pridejapan.net/pjtoyama/2022.html">
+									<img src="./index_files/2022past.jpg" alt="">
+								</a>
+							</div>
+	
+						</div>
+	<div style="text-align:center;margin:7px;">
+	<a href="http://pridejapan.net/pjtoyama/PRIDE%20JAPAN%E5%85%A8%E5%9B%BD%E9%81%B8%E6%8A%9C%E5%AD%A6%E7%AB%A5%E9%87%8E%E7%90%83%E5%A4%A7%E4%BC%9A2023%E3%80%80%E5%AF%8C%E5%B1%B1%EF%BC%88%E4%BA%88%E9%81%B8%E3%83%AA%E3%83%BC%E3%82%B0%E8%A9%A6%E5%90%88%E6%97%A5%E7%A8%8B%E8%A1%A8%EF%BC%89.pdf">第2回大会　グループリーグ結果</a><br>
+<br>
+	<a href="http://pridejapan.net/pjtoyama/PRIDE%20JAPAN%E5%85%A8%E5%9B%BD%E9%81%B8%E6%8A%9C%E5%AD%A6%E7%AB%A5%E9%87%8E%E7%90%832023%E3%80%80%E5%AF%8C%E5%B1%B1%EF%BC%88%E6%B1%BA%E5%8B%9D%E3%83%88%E3%83%BC%E3%83%8A%E3%83%A1%E3%83%B3%E3%83%88%E8%A1%A8%EF%BC%89.pdf">第2回大会　決勝トーナメント結果</a><br>
+						</div>
+
+	<div style="text-align:center;margin:7px;"><br>
+<br>
+<br>
+	<a href="http://pridejapan.net/pjtoyama/PRIDE%20JAPAN%E5%85%A8%E5%9B%BD%E9%81%B8%E6%8A%9C%E5%AD%A6%E7%AB%A5%E9%87%8E%E7%90%83%E5%A4%A7%E4%BC%9A2024%E3%80%80%E5%AF%8C%E5%B1%B1%EF%BC%88%E4%BA%88%E9%81%B8%E3%83%AA%E3%83%BC%E3%82%B0%E8%A9%A6%E5%90%88%E6%97%A5%E7%A8%8B%E8%A1%A8%EF%BC%89.pdf">第3回大会　グループリーグ結果</a><br>
+<br>
+	<a href="http://pridejapan.net/pjtoyama/PRIDE%20JAPAN%E5%85%A8%E5%9B%BD%E9%81%B8%E6%8A%9C%E5%AD%A6%E7%AB%A5%E9%87%8E%E7%90%832024%E3%80%80%E5%AF%8C%E5%B1%B1%EF%BC%88%E6%B1%BA%E5%8B%9D%E3%83%88%E3%83%BC%E3%83%8A%E3%83%A1%E3%83%B3%E3%83%88%E8%A1%A8%EF%BC%89.pdf">第3回大会　決勝トーナメント結果</a><br>
+						</div>
+
+
+<div style="text-align:center;margin:5px;">
+	<h2>スポンサー<br><span>sponsor</span></h2>
+	<div class="threeCol">
+		<div class="inner">
+			<a href="https://www.calbee.co.jp/products/detail/?p=20250527121700">
+				<img src="./index_files/calbee.jpg" alt="calbee">
+			</a></div><a href="https://www.calbee.co.jp/products/detail/?p=20250527121700">
+			</a>
+</div>
+
+<div style="text-align:center;margin:5px;">
+
+	<h2>各種SNS<br><span>SNS</span></h2>
+	<div class="threeCol">
+		<div class="inner">
+			<a href="https://www.facebook.com/pridejapan.net/">
+				<img src="./index_files/c-fb.png" alt="">
+			</a>
+		</div>
+		<div class="inner">
+			<a href="https://twitter.com/PRIDEJAPAN2015">
+					<img src="./index_files/c-tw.png" alt="">
+			</a>
+		</div>
+		<div class="inner">
+			<a href="https://www.instagram.com/pridejapan/">
+				<img src="./index_files/c-in.png" alt="">
+			</a>
+		</div>
+	</div>
+
+</div>
+
+<footer>
+	<div class="inner">
+		<nav class="fnav">
+			<ul>
+				<a href="https://pridejapan.net/pjtoyama/index.html">ホーム</a>
+				<li><a href="https://pridejapan.net/pjtoyama/index.html#information">大会概要</a></li>
+				<li><a href="https://pridejapan.net/pjtoyama/index.html#Game%20rules">大会規定</a></li>
+				<li><a href="https://pridejapan.net/pjtoyama/index.html#schedule">試合日程/結果</a>
+				</li><li><a href="https://pridejapan.net/pjtoyama/index.html">エントリー</a></li>
+				<li><a href="http://pridejapan.net/script/mailform/toyama_contact/">お問い合わせ</a></li>
+							</ul>
+		</nav>
+	</div>
+	<div class="copyright"><small>Copyright © 2020 - PRIDEJAPAN.ALL Rights Reserved.</small></div><!-- /.copyright -->
+</footer>
+<div class="totop" style="display: none;"><a href="https://pridejapan.net/pjtoyama/index.html#"><img src="./index_files/totop.png" alt="ページのトップへ戻る"></a></div><!-- /.totop -->
+
+
+</div></div></body></html>

@@ -1,0 +1,2420 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+	<!-- wakatime:waka_7d6b1c77-febd-4160-bc5d-e0f7ee9cefe8-->
+<script>
+	// トーナメント表の見出しを作成
+	// @param {number} p_gameRound ラウンド数
+	// @return {HTMLTableRowElement} 見出し行
+	function create_TornamentHeaderRow( p_gameRound = 0 ){
+		
+		console.log( "create_TornamentHeaderRow: p_gameRound=" + p_gameRound );
+
+		const headerRow = document.createElement( "tr" );
+		const headers = [];	// 見出し配列
+
+		// チーム名（左側）
+		headers.push( "" );
+		// チーム番号（左側）
+		headers.push( "" );
+		// ラウンド見出し（左側）
+		for( let round = 1; round <= p_gameRound; round++ ){
+			if( round === p_gameRound - 2 ){
+				headers.push( "準々決勝" );
+			}
+			else if( round === p_gameRound - 1 ){
+				headers.push( "準決勝" );
+			}
+			else if( round === p_gameRound ){
+				headers.push( "" );
+			}
+			else{
+				headers.push( round + "回戦" );
+			}
+		}
+		// 中央
+		headers.push( "決勝" );
+		// ラウンド見出し（右側）
+		for( let round = Math.floor( p_gameRound ); round >= 1; round-- ){
+			if( round === p_gameRound - 2 ){
+				headers.push( "準々決勝" );
+			}
+			else if( round === p_gameRound - 1 ){
+				headers.push( "準決勝" );
+			}
+			else if( round === p_gameRound ){
+				headers.push( "" );
+			}
+			else{
+				headers.push( round + "回戦" );
+			}
+		}
+		// チーム番号（右側）
+		headers.push( "" );
+		// チーム名（右側）
+		headers.push( "" );
+		// 見出し行を作成
+		headers.forEach( headerValue => {
+			const th = document.createElement( "th" );
+			th.textContent = headerValue;
+			headerRow.appendChild( th );
+		});
+		// 見出し行を返す
+		return headerRow;
+	}
+
+	// チーム名セルの作成
+	// @param {string} p_teamName チーム名
+	// @param {number} p_teamIndex チームインデックス( 0 〜 )
+	// @return {HTMLTableCellElement} チーム名セル
+	function create_TeamNameCell( p_teamName = "", p_teamIndex = 0 ){
+		// チーム名セルを作成
+		const teamNameCell = document.createElement( "td" );
+		// IDを設定
+		teamNameCell.id = "TeamName" + ( p_teamIndex + 1 );
+		// チーム名を設定
+		teamNameCell.textContent = p_teamName;
+		// rowspanを2に設定
+		teamNameCell.rowSpan = 2;
+		// borderを設定
+		teamNameCell.style.border = "1px solid black";
+		// チーム名セルを返す
+		return teamNameCell;
+	}
+
+	// チーム番号セルの作成
+	// @param {number} p_teamNumber チーム番号
+	// @return {HTMLTableCellElement} チーム番号セル
+	function create_TeamNumberCell( p_teamNumber = 0 ){
+		// チーム番号セルを作成
+		const teamNumberCell = document.createElement( "td" );
+		// IDを設定
+		teamNumberCell.id = "TeamNumber" + ( p_teamNumber );
+		// チーム番号を設定
+		teamNumberCell.textContent = p_teamNumber;
+		// rowspanを2に設定
+		teamNumberCell.rowSpan = 2;
+		// borderを設定
+		teamNumberCell.style.border = "1px solid black";
+		// チーム番号セルを返す
+		return teamNumberCell;
+	}
+
+	// ラウンドセルの作成
+	function create_RoundCell( p_gameRound = 0, p_teamNumber = 0, p_teamRow = 0, p_position = "" ){
+		// ラウンドセルを作成
+		const roundCell = document.createElement( "td" );
+		// セルの内容を設定
+		roundCell.textContent =  "R" + p_gameRound + "_T" + p_teamNumber + "_" + p_teamRow + "_" +p_position;
+		// IDを設定
+		// roundCell.id = "Round_" + round + "_Team_" + teamNumber;
+
+		// 第1回戦
+		if( p_gameRound === 1 ){
+			if( p_teamNumber % 2 !== 0 ){	// 奇数チーム
+				if( p_teamRow === 2 ){
+					roundCell.id = "Round_" + p_gameRound + "_Team_" + ( p_teamNumber );
+					roundCell.style.borderTop = "1px solid black"; // 1回戦のみ上線を太く
+					switch( p_position ){
+						case "L":
+							roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+							break;
+						case "R":
+							roundCell.style.borderLeft = "1px solid black"; // 偶数行の左線を太く
+							break;
+					}
+				}
+			}
+			if( p_teamNumber % 2 === 0 ){	// 偶数チーム
+				if( p_teamRow === 1 ){
+					roundCell.id = "Round_" + p_gameRound + "_Team_" + ( p_teamNumber );
+					roundCell.style.borderBottom = "1px solid black"; // 1回戦のみ上線を太く
+					switch( p_position ){
+						case "L":
+							roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+							break;
+						case "R":
+							roundCell.style.borderLeft = "1px solid black"; // 偶数行の左線を太く
+							break;
+					}
+				}
+			}
+		}
+
+		// 第2回戦
+		if( p_gameRound === 2 ){
+			switch( p_teamNumber ){
+				case 2: case 6: case 10: case 14: case 18: case 22: case 26: case 30:
+					if( p_teamRow === 1 ){
+						roundCell.id = "Round_" + p_gameRound + "_Team_" + ( p_teamNumber );
+						roundCell.style.borderTop = "1px solid black"; // 2回戦のみ下線を太く
+						switch( p_position ){
+							case "L":
+								roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+								break;
+						}
+					}
+					else{
+						switch( p_position ){
+							case "L":
+								roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+								break;
+						}
+					}
+					break;
+				case 3: case 7: case 11: case 15: case 19: case 23: case 27: case 31:
+					if( p_teamRow === 2 ){
+						roundCell.id = "Round_" + p_gameRound + "_Team_" + ( p_teamNumber );
+						roundCell.style.borderBottom = "1px solid black"; // 2回戦のみ下線を太く
+						switch( p_position ){
+							case "L":
+								roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+								break;
+						}
+					}
+					else{
+						switch( p_position ){
+							case "L":
+								roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+								break;
+						}
+					}
+					break;
+			}
+		}
+
+		// 第3回戦
+		if( p_gameRound === 3 ){
+			switch( p_teamNumber ){
+				case 3: case 11: case 19: case 27:
+					if( p_teamRow === 1 ){
+						roundCell.id = "Round_" + p_gameRound + "_Team_" + ( p_teamNumber );
+						roundCell.style.borderTop = "1px solid black"; // 2回戦のみ下線を太く
+						switch( p_position ){
+							case "L":
+								roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+								break;
+						}
+					}
+					else{
+						switch( p_position ){
+							case "L":
+								roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+								break;
+						}
+					}
+					break;
+				case 6: case 14: case 22: case 30:
+					if( p_teamRow === 2 ){
+						roundCell.id = "Round_" + p_gameRound + "_Team_" + ( p_teamNumber );
+						roundCell.style.borderBottom = "1px solid black"; // 2回戦のみ下線を太く
+						switch( p_position ){
+							case "L":
+								roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+								break;
+						}
+					}
+					else{
+						switch( p_position ){
+							case "L":
+								roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+								break;
+						}
+					}
+					break;
+				case 4: case 5: case 12: case 13: case 20: case 21: case 28: case 29:
+						switch( p_position ){
+							case "L":
+								roundCell.style.borderRight = "1px solid black"; // 偶数行の左線を太く
+								break;
+						}
+					break;
+				}
+		}		
+		// ラウンドセルを返す
+		return roundCell;
+	}
+
+	// トーナメント表を作成
+	function create_Tornament(){
+		// 入力されたチーム数を取得
+		let teamCount = document.getElementById( "teamCount" ).value;
+		console.log( "チーム数: " + teamCount );
+		
+		// チーム数からラウンド数を計算
+		let gameRound = Math.log( teamCount ) / Math.log( 2 );
+		console.log( "ラウンド数: " + gameRound );
+
+		// チーム名の配列を作成
+		let teams = [];
+		for( let i = 1; i <= teamCount; i++ ){
+			let teamName = "Team" + ( i < 10 ? "0" + i : i );
+			teams.push( teamName );
+		}
+
+		// チーム名を左右に分割
+		let leftTeams = teams.slice( 0, teamCount / 2 );	// 左半分(  0 〜 teamCount/2-1 )
+		let rightTeams = teams.slice( teamCount / 2 );	// 右半分( teamCount/2 〜 teamCount-1 )
+		console.log( "leftTeams: " + leftTeams );
+		console.log( "rightTeams: " + rightTeams );
+
+		// チーム行を作成( 左右のチーム数の多い方 )
+		const teamRowCount = Math.max( leftTeams.length, rightTeams.length );
+		console.log( "teamRowCount: " + teamRowCount );
+
+		// トーナメント表を表示するdiv要素を取得
+		const tornamentContainer = document.getElementById( "tornament" );
+
+		// 子要素のクリア
+		tornamentContainer.replaceChildren();
+
+		// トーナメント用table要素を作成
+		const tonrnamentTable = document.createElement( "table" );
+		tonrnamentTable.border = "1"; // 枠線を追加（任意）
+		tonrnamentTable.style.borderCollapse = "collapse"; // 枠線を重ねる
+
+		// テーブルヘッダー行を作成
+		tonrnamentTable.appendChild( create_TornamentHeaderRow( gameRound ) );
+		// センターの設定状況
+		let centerSet = false;
+		let roundGame = new Array( gameRound + 1 ).fill( 0 );
+
+		for( let row = 0; row < teamRowCount * 2; row++ ){
+
+			const tr = document.createElement( "tr" );
+
+			const colCount = 2 + gameRound + 1 + gameRound + 2;
+			
+			for( col = 0; col < colCount; col++ ){
+
+				const position = ( col < 2 + gameRound ) ? "L" : ( col === 2 + gameRound ) ? "C" : "R" ;
+				const round = ( col < 2 + gameRound ) ? Math.floor( ( col - 2 ) / 1 ) + 1 : ( col === 2 + gameRound ) ? gameRound + 1 : Math.floor( colCount - col - 3 ) + 1 ;
+				switch( round ){
+					case -1:
+						if( row % 2 === 0 ){
+							tr.appendChild( create_TeamNameCell( ( col === 0 ? leftTeams[ Math.floor( row / 2 ) ] : rightTeams[ Math.floor( row / 2 ) ] ) || "", ( col === 0 ? Math.floor( row / 2 ) : leftTeams.length + Math.floor( row / 2 ) ) ) );
+						}
+						break;
+					case 0:
+						if( row % 2 === 0 ){
+							tr.appendChild( create_TeamNumberCell( ( col === 1 ? Math.floor( row / 2 ) + 1 : leftTeams.length + Math.floor( row / 2 ) + 1 ) ) );
+						}
+						break;
+					case gameRound + 1:
+						if( row == teamRowCount - 1 ){
+							const td = document.createElement( "td" );
+							td.textContent = "R" + round + "P" + position + "R" + String( row ).padStart( 2, '0' ) + "C" + String( col ).padStart( 2, '0' );
+							td.rowSpan = 2;
+							td.style.border = "1px solid black";
+							tr.appendChild( td );
+							centerSet = true;
+						}
+						else{
+							if( centerSet ){
+								// すでに中央セルが設定されている場合、rowspan=2なのでセル作成をスキップ
+								centerSet = false;
+							}
+							else{
+								const td = document.createElement( "td" );
+								td.textContent = "R" + round + "P" + position + "R" + String( row ).padStart( 2, '0' ) + "C" + String( col ).padStart( 2, '0' );
+								td.textContent = "";
+								tr.appendChild( td );
+							}
+						}
+						break;
+					default:
+						const td = document.createElement( "td" );
+						td.textContent = "R" + round + "P" + position + "R" + String( row ).padStart( 2, '0' ) + "C" + String( col ).padStart( 2, '0' );
+//						td.textContent = "";
+						if( round > 0 && round <= gameRound ){
+							const remain = ( row + 1 ) % ( 4 * Math.pow( 2, round - 1 ) );
+							const startRow = Math.pow( 2, round - 1 ) + 1;        // B = 2^A - 1
+							const endRow = 3 * Math.pow( 2, round - 1 );    // C = 3 × 2^(A-1)
+							switch( true ){
+								case ( remain == startRow ):
+									td.style.borderTop = "1px solid black";
+									switch( position ){
+										case "L":
+											td.id = "R" + round;
+											td.style.borderRight = "1px solid black";
+											break;
+										case "R":
+											td.style.borderLeft = "1px solid black";
+											break;
+									}
+									break;
+								case ( remain == endRow ):
+									td.style.borderBottom = "1px solid black";
+									switch( position ){
+										case "L":
+											td.style.borderRight = "1px solid black";
+											break;
+										case "R":
+											td.style.borderLeft = "1px solid black";
+											break;
+									}
+									break;
+								case ( remain > startRow && remain < endRow ):
+									if( round != gameRound ){
+										switch( position ){
+											case "L":
+												td.style.borderRight = "1px solid black";
+												break;
+											case "R":
+												td.style.borderLeft = "1px solid black";
+												break;
+										}
+									}
+									break;
+							}
+						}
+						tr.appendChild( td );
+						break;
+				}
+
+			}
+
+			tonrnamentTable.appendChild( tr );
+		}
+
+		for( let i = 0; i < teamRowCount; i++ ){	// 各チームごとに2行使用
+			continue;
+			// チームの1行目
+			const row1 = document.createElement( "tr" );
+
+			// チーム名（左側）
+			row1.appendChild( create_TeamNameCell( leftTeams[ i ] || "", i ) );
+
+			// チーム番号（左側）
+			row1.appendChild( create_TeamNumberCell( i + 1 ) );
+
+			// ラウンドセル（左側）
+			for( let round = 1; round <= gameRound; round++ ){
+
+				row1.appendChild( create_RoundCell( round, i + 1, 1, "L" ) );
+
+			}
+
+			// 中央の空セル
+			row1.appendChild( create_RoundCell( gameRound + 1, i + 1, 1, "C" ) );
+
+			// ラウンドセル（右側）
+			for( let round = Math.floor( gameRound ); round >= 1; round-- ){
+
+				row1.appendChild( create_RoundCell( round, leftTeams.length + i + 1, 1, "R" ) );
+
+			}
+
+			// チーム番号（右側）
+			row1.appendChild( create_TeamNumberCell( leftTeams.length + i + 1 ) );
+			// チーム名（右側）
+			row1.appendChild( create_TeamNameCell( rightTeams[ i ] || "", leftTeams.length + i ) );
+
+			// 行をテーブルに追加
+			tonrnamentTable.appendChild( row1 );
+			
+			// チームの2行目
+			const row2 = document.createElement( "tr" );
+
+			// ラウンドセル（左側）
+			for( let round = 1; round <= gameRound; round++ ){
+
+				row2.appendChild( create_RoundCell( round, i + 1, 2, "L" ) );
+
+			}
+
+			// 中央の空セル
+			row2.appendChild( create_RoundCell( gameRound + 1, i + 1, 2, "C" ) );
+			// ラウンドセル（右側）
+			for( let round = Math.floor( gameRound ); round >= 1; round-- ){
+
+				row2.appendChild( create_RoundCell( round, leftTeams.length + i + 1, 2, "R" ) );
+				
+			}
+
+			tonrnamentTable.appendChild( row2 );
+		}
+	
+		// divにtableを追加
+		tornamentContainer.appendChild(tonrnamentTable);
+	}
+</script>
+	
+チーム数：<input id="teamCount" type="number" value="64">
+<input type="button" onClick="create_Tornament()" value="送信" id="buttonCreate">
+
+<div id="tornament">
+
+</div>
+
+<div>
+<style>
+	tr
+	{mso-height-source:auto;
+	mso-ruby-visibility:none;}
+col
+	{mso-width-source:auto;
+	mso-ruby-visibility:none;}
+br
+	{mso-data-placement:same-cell;}
+ruby
+	{ruby-align:left;}
+.style0
+	{mso-number-format:General;
+	text-align:general;
+	vertical-align:middle;
+	white-space:nowrap;
+	mso-rotate:0;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	color:black;
+	font-size:11.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:���S�V�b�N, monospace;
+	mso-font-charset:128;
+	border:none;
+	mso-protection:locked visible;
+	mso-style-name:�W��;
+	mso-style-id:0;}
+td
+	{mso-style-parent:style0;
+	padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:black;
+	font-size:11.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:���S�V�b�N, monospace;
+	mso-font-charset:128;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:middle;
+	border:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	mso-protection:locked visible;
+	white-space:nowrap;
+	mso-rotate:0;}
+.xl65
+	{mso-style-parent:style0;
+	border-top:.5pt solid windowtext;
+	border-right:none;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl66
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:none;
+	border-bottom:.5pt solid windowtext;
+	border-left:.5pt solid windowtext;}
+.xl67
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;}
+.xl68
+	{mso-style-parent:style0;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;}
+.xl69
+	{mso-style-parent:style0;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl70
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:.5pt solid windowtext;}
+.xl71
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl72
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;}
+.xl73
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:none;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl74
+	{mso-style-parent:style0;
+	border-top:.5pt solid windowtext;
+	border-right:none;
+	border-bottom:none;
+	border-left:none;}
+.xl75
+	{mso-style-parent:style0;
+	border-top:1.5pt solid #C00000;
+	border-right:1.5pt solid #C00000;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl76
+	{mso-style-parent:style0;
+	border-top:1.5pt solid #C00000;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl77
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:1.5pt solid #C00000;
+	border-bottom:1.5pt solid #C00000;
+	border-left:.5pt solid windowtext;}
+.xl78
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl79
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;}
+.xl80
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;}
+.xl81
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:.5pt solid windowtext;}
+.xl82
+	{mso-style-parent:style0;
+	text-align:left;}
+.xl83
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:none;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl84
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl85
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:.5pt solid windowtext;
+	border-right:none;
+	border-bottom:none;
+	border-left:none;}
+.xl86
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:none;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;}
+.xl87
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;}
+.xl88
+	{mso-style-parent:style0;
+	border-top:1.5pt solid #C00000;
+	border-right:1.5pt solid #C00000;
+	border-bottom:none;
+	border-left:none;}
+.xl89
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:1.5pt solid #C00000;
+	border-bottom:1.5pt solid #C00000;
+	border-left:1.5pt solid #C00000;}
+.xl90
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.5pt solid #C00000;
+	border-left:1.5pt solid #C00000;}
+.xl91
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:1.5pt solid #C00000;
+	border-left:1.5pt solid #C00000;}
+.xl92
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.5pt solid #C00000;
+	border-left:.5pt solid windowtext;}
+.xl93
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:1.5pt solid #C00000;
+	border-left:.5pt solid windowtext;}
+.xl94
+	{mso-style-parent:style0;
+	border-top:1.5pt solid #C00000;
+	border-right:none;
+	border-bottom:none;
+	border-left:1.5pt solid #C00000;}
+.xl95
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:none;
+	border-bottom:none;
+	border-left:1.5pt solid #C00000;}
+.xl96
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:1.5pt solid #C00000;}
+.xl97
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:none;
+	border-bottom:.5pt solid windowtext;
+	border-left:1.5pt solid #C00000;}
+.xl98
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:1.5pt solid #C00000;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:1.5pt solid #C00000;}
+.xl99
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:1.5pt solid #C00000;
+	border-bottom:1.5pt solid #C00000;
+	border-left:.5pt solid windowtext;}
+.xl100
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.5pt solid #C00000;
+	border-left:.5pt solid windowtext;}
+.xl101
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:1.5pt solid #C00000;
+	border-left:none;}
+.xl102
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:1.5pt solid #C00000;
+	border-bottom:1.5pt solid #C00000;
+	border-left:none;}
+.xl103
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:1.5pt solid #C00000;
+	border-bottom:none;
+	border-left:none;}
+.xl104
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:1.5pt solid #C00000;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;}
+.xl105
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:1.5pt solid #C00000;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl106
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:1.5pt solid #C00000;}
+.xl107
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:none;
+	border-bottom:none;
+	border-left:1.5pt solid #C00000;}
+.xl108
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:.5pt solid windowtext;
+	border-right:none;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl109
+	{mso-style-parent:style0;
+	text-align:left;
+	border-top:none;
+	border-right:none;
+	border-bottom:.5pt solid windowtext;
+	border-left:.5pt solid windowtext;}
+.xl110
+	{mso-style-parent:style0;
+	text-align:center;
+	border:.5pt solid windowtext;
+	background:#D9D9D9;
+	mso-pattern:black none;}
+.xl111
+	{mso-style-parent:style0;
+	text-align:center;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:.5pt solid windowtext;}
+.xl112
+	{mso-style-parent:style0;
+	text-align:center;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:.5pt solid windowtext;}
+.xl113
+	{mso-style-parent:style0;
+	text-align:center;
+	border:.5pt solid windowtext;}
+
+</style>
+<table border=1 cellpadding=0 cellspacing=0 width=1224 style='border-collapse:
+ collapse;table-layout:fixed;width:918pt'>
+ <col width=72 span=17 style='width:54pt'>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 width=72 style='height:18.75pt;width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 colspan=2 style='height:18.75pt;mso-ignore:colspan'></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>1<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>2<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>3<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>準々決勝<span style='display:none'><rt>ジュンジュンケッショウ</rt></span></ruby></td>
+  <td><ruby>準決勝<span style='display:none'><rt>ジュンケッショウ</rt></span></ruby></td>
+  <td><ruby>決勝<span style='display:none'><rt>ケッショウ</rt></span></ruby></td>
+  <td><ruby>表<span style='display:none'><rt>オモテ</rt></span></ruby></td>
+  <td><ruby>決勝<span style='display:none'><rt>ケッショウ</rt></span></ruby></td>
+  <td><ruby>準決勝<span style='display:none'><rt>ジュンケッショウ</rt></span></ruby></td>
+  <td><ruby>順々<span style='display:none'><rt>ジュンジュン</rt></span></ruby><ruby>決勝<span
+  style='display:none'><rt>ケッショウ</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>3<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>2<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>1<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=53 class=xl113 style='height:39.75pt'>Team01</td>
+  <td rowspan=2 class=xl113>1</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td colspan=6 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl72>　</td>
+  <td rowspan=2 class=xl113>36</td>
+  <td rowspan=2 class=xl113>Team36</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td colspan=6 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl110 style='height:39.0pt;border-top:none'>Team02</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>2</td>
+  <td class=xl66 align=right style='border-left:none'>0</td>
+  <td class=xl76 align=right>0</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+  <td class=xl79>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>37</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team37</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td class=xl72>　</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl102>　</td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl110 style='height:40.5pt;border-top:none'>Team03</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>3</td>
+  <td class=xl66 style='border-left:none'>　</td>
+  <td></td>
+  <td class=xl94 align=right>1</td>
+  <td class=xl95>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl98 style='border-top:none'>1</td>
+  <td class=xl82></td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>38</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team38</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl65 align=right style='height:20.25pt;border-top:none;
+  border-left:none'>0</td>
+  <td class=xl77 align=right>1</td>
+  <td></td>
+  <td class=xl95>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl103>　</td>
+  <td class=xl87>　</td>
+  <td class=xl99 style='border-left:none'>0</td>
+  <td class=xl98 style='border-left:none'>1</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team04</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>4</td>
+  <td class=xl77 align=right style='border-left:none'>1</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl95>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl103>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl81>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>39</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team39</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl73 style='height:20.25pt;border-left:none'>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl90>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl102>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team05</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>5</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl71 align=right>0</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl103>　</td>
+  <td class=xl104 style='border-top:none'>1</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>40</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team40</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl71>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl103>　</td>
+  <td class=xl87>　</td>
+  <td class=xl82></td>
+  <td class=xl86>　</td>
+  <td class=xl98>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl110 style='height:39.0pt;border-top:none'>Team06</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>6</td>
+  <td class=xl66 align=right style='border-left:none'>1</td>
+  <td class=xl75 align=right>1</td>
+  <td></td>
+  <td class=xl71>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl103>　</td>
+  <td class=xl87>　</td>
+  <td class=xl87>　</td>
+  <td class=xl98>1</td>
+  <td class=xl81 style='border-left:none'>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>41</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team41</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td></td>
+  <td class=xl90 align=right>1</td>
+  <td class=xl71>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl103>　</td>
+  <td class=xl87>　</td>
+  <td class=xl99 style='border-left:none'>0</td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl110 style='height:40.5pt;border-top:none'>Team07</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>7</td>
+  <td class=xl66 style='border-left:none'>　</td>
+  <td class=xl72>　</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl103>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>42</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team42</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl65 align=right style='height:20.25pt;border-top:none;
+  border-left:none'>0</td>
+  <td class=xl71 align=right>0</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl103>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl99>0</td>
+  <td class=xl98 style='border-left:none'>1</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team08</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>8</td>
+  <td class=xl77 align=right style='border-left:none'>1</td>
+  <td class=xl94 style='border-left:none'>　</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl103>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl81>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>43</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team43</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl73 style='height:20.25pt;border-left:none'>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl102>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team09</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>9</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl94 align=right>1</td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl98 style='border-top:none'>1</td>
+  <td class=xl83 style='border-left:none'>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>44</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team44</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl95>　</td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl106>　</td>
+  <td class=xl83 style='border-left:none'>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl110 style='height:39.0pt;border-top:none'>Team10</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>10</td>
+  <td class=xl66 align=right style='border-left:none'>0</td>
+  <td class=xl75 align=right>1</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl95>　</td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl106>　</td>
+  <td class=xl83 style='border-left:none'>　</td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+  <td class=xl81 style='border-left:none'>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>45</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team45</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td></td>
+  <td class=xl90>　</td>
+  <td></td>
+  <td class=xl95>　</td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl106>　</td>
+  <td class=xl83 style='border-left:none'>　</td>
+  <td class=xl102>　</td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team11</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>11</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td class=xl72>　</td>
+  <td class=xl73 align=right style='border-left:none'>0</td>
+  <td class=xl73>　</td>
+  <td class=xl95>　</td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl106>　</td>
+  <td class=xl105 style='border-left:none'>　</td>
+  <td class=xl104 style='border-top:none'>1</td>
+  <td class=xl83 style='border-left:none'>　</td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>46</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team46</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td class=xl91 align=right style='border-left:none'>1</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td class=xl73>　</td>
+  <td class=xl95>　</td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl106>　</td>
+  <td class=xl105 style='border-left:none'>　</td>
+  <td class=xl87>　</td>
+  <td class=xl99 style='border-left:none'>0</td>
+  <td class=xl98 style='border-left:none'>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl110 style='height:39.0pt;border-top:none'>Team12</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>12</td>
+  <td class=xl70 align=right style='border-left:none'>1</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl73>　</td>
+  <td class=xl95>　</td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl106>　</td>
+  <td class=xl105 style='border-left:none'>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl81>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>47</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team47</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl73 align=right>1</td>
+  <td class=xl95>　</td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl106>　</td>
+  <td class=xl99 style='border-left:none'>0</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl110 style='height:40.5pt;border-top:none'>Team13</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>13</td>
+  <td class=xl66 style='border-left:none'>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl94>　</td>
+  <td></td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl107>　</td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>48</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team48</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl69 align=right style='height:20.25pt;border-top:none;
+  border-left:none'>0</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl107>　</td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team14</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>14</td>
+  <td class=xl77 align=right style='border-left:none'>1</td>
+  <td class=xl88 align=right>1</td>
+  <td></td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl107>　</td>
+  <td class=xl82></td>
+  <td class=xl84>　</td>
+  <td class=xl98>1</td>
+  <td class=xl81 style='border-left:none'>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>49</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team49</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl73 style='height:20.25pt;border-left:none'>　</td>
+  <td></td>
+  <td class=xl90 align=right>1</td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl107>　</td>
+  <td class=xl82></td>
+  <td class=xl99>0</td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team15</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>15</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl107>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>50</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team50</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td class=xl91 align=right style='border-left:none'>0</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl107>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl99>0</td>
+  <td class=xl98 style='border-left:none'>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl110 style='height:39.0pt;border-top:none'>Team16</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>16</td>
+  <td class=xl70 align=right style='border-left:none'>1</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl95>　</td>
+  <td></td>
+  <td class=xl82></td>
+  <td class=xl107>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl81>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>51</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team51</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl97 align=right>0</td>
+  <td rowspan=2 class=xl111 style='border-bottom:.5pt solid black'>　</td>
+  <td class=xl99 style='border-left:none'>1</td>
+  <td class=xl107 style='border-left:none'>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team17</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>17</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td class=xl65 style='border-top:none;border-left:none'>　</td>
+  <td class=xl87>　</td>
+  <td class=xl83 style='border-left:none'>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>52</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team52</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td class=xl90 style='border-left:none'>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl110 style='height:39.0pt;border-top:none'>Team18</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>18</td>
+  <td class=xl66 align=right style='border-left:none'>0</td>
+  <td class=xl71 align=right>0</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+  <td class=xl81 style='border-left:none'>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>53</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team53</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td class=xl72>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl102>　</td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team19</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>19</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td></td>
+  <td class=xl94 align=right>1</td>
+  <td class=xl95>　</td>
+  <td class=xl72>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl103>　</td>
+  <td class=xl104 style='border-top:none'>1</td>
+  <td class=xl83 style='border-left:none'>　</td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>54</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team54</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td class=xl89 align=right style='border-left:none'>1</td>
+  <td></td>
+  <td class=xl95>　</td>
+  <td class=xl72>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl103>　</td>
+  <td class=xl87>　</td>
+  <td class=xl99 style='border-left:none'>0</td>
+  <td class=xl98 style='border-left:none'>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl110 style='height:39.0pt;border-top:none'>Team20</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>20</td>
+  <td class=xl70 align=right style='border-left:none'>1</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl95>　</td>
+  <td class=xl72>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl103>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl81>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>55</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team55</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl90>　</td>
+  <td class=xl72>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl102>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team21</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>21</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl73 align=right>1</td>
+  <td class=xl96>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl105>　</td>
+  <td class=xl104 style='border-top:none'>1</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>56</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team56</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl73>　</td>
+  <td class=xl96>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl105>　</td>
+  <td class=xl87>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl110 style='height:39.0pt;border-top:none'>Team22</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>22</td>
+  <td class=xl66 align=right style='border-left:none'>0</td>
+  <td class=xl75 align=right>1</td>
+  <td></td>
+  <td class=xl73>　</td>
+  <td class=xl96>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl105>　</td>
+  <td class=xl87>　</td>
+  <td class=xl87>　</td>
+  <td class=xl98>1</td>
+  <td class=xl81 style='border-left:none'>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>57</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team57</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td></td>
+  <td class=xl91 align=right>0</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td class=xl96>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl105>　</td>
+  <td class=xl87>　</td>
+  <td class=xl99 style='border-left:none'>0</td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl110 style='height:40.5pt;border-top:none'>Team23</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>23</td>
+  <td class=xl66 style='border-left:none'>　</td>
+  <td class=xl72>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl96>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl105>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>58</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team58</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl65 align=right style='height:20.25pt;border-top:none;
+  border-left:none'>0</td>
+  <td class=xl93 align=right>1</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl96>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl105>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl99>0</td>
+  <td class=xl98 style='border-left:none'>1</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team24</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>24</td>
+  <td class=xl77 align=right style='border-left:none'>1</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl96>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl105>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl81>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>59</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team59</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl73 style='height:20.25pt;border-left:none'>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl91 align=right>0</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl99>0</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl110 style='height:40.5pt;border-top:none'>Team25</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>25</td>
+  <td class=xl66 style='border-left:none'>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>60</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team60</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl69 align=right style='height:20.25pt;border-top:none;
+  border-left:none'>0</td>
+  <td class=xl92 style='border-left:none'>　</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team26</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>26</td>
+  <td class=xl77 align=right style='border-left:none'>1</td>
+  <td class=xl72 align=right>0</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+  <td class=xl81 style='border-left:none'>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>61</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team61</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl73 style='height:20.25pt;border-left:none'>　</td>
+  <td class=xl72>　</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl102>　</td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team27</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>27</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td></td>
+  <td class=xl94 align=right>1</td>
+  <td class=xl96>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl105>　</td>
+  <td class=xl104 style='border-top:none'>1</td>
+  <td class=xl83 style='border-left:none'>　</td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>62</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team62</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td class=xl89 align=right style='border-left:none'>1</td>
+  <td></td>
+  <td class=xl96>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl105>　</td>
+  <td class=xl87>　</td>
+  <td class=xl99 style='border-left:none'>0</td>
+  <td class=xl98 style='border-left:none'>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl110 style='height:39.0pt;border-top:none'>Team28</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>28</td>
+  <td class=xl70 align=right style='border-left:none'>0</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl96>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl105>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl81>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>63</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team63</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl91 align=right>0</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl99>0</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team29</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>29</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>64</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team64</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl110 style='height:39.0pt;border-top:none'>Team30</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>30</td>
+  <td class=xl66 align=right style='border-left:none'>1</td>
+  <td class=xl75 align=right>1</td>
+  <td class=xl72>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl84>　</td>
+  <td class=xl98>1</td>
+  <td class=xl81 style='border-left:none'>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>65</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team65</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td></td>
+  <td class=xl91 align=right>0</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl99>0</td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=54 class=xl113 style='height:40.5pt;border-top:none'>Team31</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>31</td>
+  <td class=xl73 style='border-left:none'>　</td>
+  <td class=xl72>　</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>66</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team66</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl75 align=right style='height:20.25pt;border-left:none'>1</td>
+  <td class=xl91 align=right style='border-left:none'>0</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl99>0</td>
+  <td class=xl98 style='border-left:none'>1</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=51 class=xl110 style='height:38.25pt;border-top:none'>Team32</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>32</td>
+  <td class=xl70 align=right style='border-left:none'>0</td>
+  <td colspan=6 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl81>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>67</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team67</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 class=xl65 style='height:18.75pt;border-top:none;border-left:
+  none'>　</td>
+  <td colspan=6 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=53 class=xl110 style='height:39.75pt;border-top:none'>Team33</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>33</td>
+  <td class=xl66 style='border-left:none'>　</td>
+  <td colspan=6 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl79>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>68</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team68</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td height=27 class=xl69 align=right style='height:20.25pt;border-top:none;
+  border-left:none'>0</td>
+  <td colspan=6 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+ </tr>
+ <tr height=27 style='height:20.25pt'>
+  <td rowspan=2 height=53 class=xl113 style='height:39.75pt;border-top:none'>Team34</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>34</td>
+  <td class=xl77 align=right style='border-left:none'>1</td>
+  <td class=xl88 align=right>1</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl98>1</td>
+  <td class=xl81 style='border-left:none'>0</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>69</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team69</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl73 style='height:19.5pt;border-left:none'>　</td>
+  <td class=xl72>　</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl80 style='border-top:none'>　</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td rowspan=2 height=52 class=xl113 style='height:39.0pt;border-top:none'>Team35</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>35</td>
+  <td class=xl66 style='border-left:none'>　</td>
+  <td class=xl72 align=right>1</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl100>0</td>
+  <td class=xl101>　</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>70</td>
+  <td rowspan=2 class=xl113 style='border-top:none'>Team70</td>
+ </tr>
+ <tr height=26 style='height:19.5pt'>
+  <td height=26 class=xl65 style='height:19.5pt;border-top:none;border-left:
+  none'>　</td>
+  <td class=xl74>　</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl85>　</td>
+  <td class=xl87>　</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 colspan=17 style='height:18.75pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 colspan=2 style='height:18.75pt;mso-ignore:colspan'></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>1<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>2<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>3<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>4<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>5<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td></td>
+  <td><ruby>裏<span style='display:none'><rt>ウラ</rt></span></ruby></td>
+  <td></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>5<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>4<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>3<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>2<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td><ruby>第<span style='display:none'><rt>ダイ</rt></span></ruby>1<ruby>回戦<span
+  style='display:none'><rt>カイセン</rt></span></ruby></td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt'>Team02</td>
+  <td rowspan=2 class=xl110>2</td>
+  <td colspan=7 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td rowspan=2 class=xl110>37</td>
+  <td rowspan=2 class=xl110>Team37</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 class=xl69 align=right style='height:18.75pt;border-left:none'>1</td>
+  <td colspan=6 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl78>0</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team03</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>3</td>
+  <td class=xl70 align=right style='border-left:none'>0</td>
+  <td class=xl68>　</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl108>　</td>
+  <td class=xl81>1</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>39</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team39</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 style='height:18.75pt'></td>
+  <td class=xl72>　</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team06</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>6</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td class=xl68>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl108>　</td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td rowspan=2 class=xl110 style='border-top:none'>41</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team41</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 class=xl69 align=right style='height:18.75pt;border-left:none'>1</td>
+  <td class=xl67>　</td>
+  <td class=xl72>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl109>　</td>
+  <td class=xl78>0</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team07</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>7</td>
+  <td class=xl70 align=right style='border-left:none'>0</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl81>1</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>43</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team43</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 colspan=2 style='height:18.75pt;mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team10</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>10</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td class=xl68>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl108>　</td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td rowspan=2 class=xl110 style='border-top:none'>45</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team45</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 class=xl69 align=right style='height:18.75pt;border-left:none'>1</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl78>0</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team12</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>12</td>
+  <td class=xl70 align=right style='border-left:none'>0</td>
+  <td class=xl68>　</td>
+  <td class=xl72>　</td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl83>　</td>
+  <td class=xl108>　</td>
+  <td class=xl81>1</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>47</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team47</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 style='height:18.75pt'></td>
+  <td class=xl72>　</td>
+  <td class=xl67>　</td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl109>　</td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team13</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>13</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td rowspan=2 class=xl110 style='border-top:none'>49</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team49</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 class=xl69 align=right style='height:18.75pt;border-left:none'>1</td>
+  <td class=xl67>　</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl109>　</td>
+  <td class=xl78>0</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team16</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>16</td>
+  <td class=xl70 align=right style='border-left:none'>0</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl81>1</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>51</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team51</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 colspan=3 style='height:18.75pt;mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td rowspan=2 class=xl111 style='border-bottom:.5pt solid black'>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team18</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>18</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td class=xl65 style='border-left:none'>　</td>
+  <td class=xl68>　</td>
+  <td class=xl108 style='border-left:none'>　</td>
+  <td class=xl80>　</td>
+  <td class=xl83 style='border-left:none'>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td rowspan=2 class=xl110 style='border-top:none'>53</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team53</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 class=xl69 align=right style='height:18.75pt;border-left:none'>1</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl78>0</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team20</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>20</td>
+  <td class=xl70 align=right style='border-left:none'>0</td>
+  <td class=xl68>　</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl108>　</td>
+  <td class=xl81>1</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>55</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team55</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 style='height:18.75pt'></td>
+  <td class=xl72>　</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team22</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>22</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td class=xl68>　</td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl108>　</td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td rowspan=2 class=xl110 style='border-top:none'>57</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team57</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 class=xl69 align=right style='height:18.75pt;border-left:none'>1</td>
+  <td class=xl67>　</td>
+  <td class=xl72>　</td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl83>　</td>
+  <td class=xl109>　</td>
+  <td class=xl78>0</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team23</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>23</td>
+  <td class=xl70 align=right style='border-left:none'>0</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td class=xl72>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl81>1</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>59</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team59</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 colspan=2 style='height:18.75pt;mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td class=xl67>　</td>
+  <td colspan=3 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl109>　</td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team25</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>25</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+  <td class=xl72>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td rowspan=2 class=xl110 style='border-top:none'>61</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team61</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 class=xl69 align=right style='height:18.75pt;border-left:none'>1</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td class=xl78>0</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team28</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>28</td>
+  <td class=xl70 align=right style='border-left:none'>0</td>
+  <td class=xl68>　</td>
+  <td class=xl72>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl108>　</td>
+  <td class=xl81>1</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>63</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team63</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 style='height:18.75pt'></td>
+  <td class=xl72>　</td>
+  <td class=xl67>　</td>
+  <td colspan=4 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl109>　</td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team30</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>30</td>
+  <td></td>
+  <td class=xl72>　</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl83>　</td>
+  <td class=xl82></td>
+  <td rowspan=2 class=xl110 style='border-top:none'>65</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team65</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 class=xl69 align=right style='height:18.75pt;border-left:none'>1</td>
+  <td class=xl67>　</td>
+  <td colspan=5 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl109>　</td>
+  <td class=xl78>0</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team32</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>32</td>
+  <td class=xl70 align=right style='border-left:none'>0</td>
+  <td colspan=6 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl81>1</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>67</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team67</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 colspan=7 style='height:18.75pt;mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td rowspan=2 height=50 class=xl110 style='height:37.5pt;border-top:none'>Team33</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>33</td>
+  <td colspan=7 style='mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td rowspan=2 class=xl110 style='border-top:none'>69</td>
+  <td rowspan=2 class=xl110 style='border-top:none'>Team69</td>
+ </tr>
+ <tr height=25 style='height:18.75pt'>
+  <td height=25 colspan=7 style='height:18.75pt;mso-ignore:colspan'></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+  <td class=xl82></td>
+ </tr>
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=72 style='width:54pt'></td>
+ </tr>
+ <![endif]>
+</table>
+</div>
+</body>
+</html>

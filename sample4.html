@@ -1,0 +1,297 @@
+
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>シード付きトーナメント表（JS）</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Helvetica Neue", Arial; background:#f7f7f9; margin:20px; }
+    h1 { font-size: 20px; margin-bottom: 10px; }
+    .toolbar { display:flex; gap:8px; align-items: center; margin-bottom: 14px; }
+    .info { color:#666; font-size: 13px; }
+    #bracket { display:flex; gap:16px; align-items: flex-start; }
+    .round { display:flex; flex-direction:column; gap:12px; }
+    .round-title { font-weight:600; font-size: 13px; color:#333; margin-bottom:6px; }
+    .match { border:1px solid #ddd; border-radius:8px; padding:8px; min-width:220px; background:white; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .participant { padding:6px 8px; border-radius:6px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+    .participant:hover { background:#f0f6ff; }
+    .seed-badge { font-size: 12px; color:#555; background:#eef; border:1px solid #cde; border-radius:4px; padding:1px 6px; margin-left:8px; }
+    .winner { background:#e7f6e7; border:1px solid #cbe9cb; }
+    .bye { color:#999; }
+    .slot-index { font-size: 11px; color:#aaa; }
+    button { padding:8px 12px; border-radius:6px; border:1px solid #ccc; background:white; cursor:pointer; }
+    button:hover { background:#f0f0f0; }
+    code { background:#f2f2fa; padding:2px 6px; border-radius:4px; }
+  </style>
+</head>
+<body>
+  <h1>シード枠付きトーナメント（シングルエリミネーション）</h1>
+
+  <div class="toolbar">
+    <button id="export">JSONとしてエクスポート</button>
+    <button id="shuffle">非シードを再シャッフル</button>
+    <span class="info">参加者名をクリックすると勝者を確定して次ラウンドへ進みます。BYEは自動で不戦勝処理します。</span>
+  </div>
+
+  <div id="bracket"></div>
+
+  <script>
+    // === ここをあなたの参加者リストに置き換えてください ==========================
+    // seed: 1 が最上位シード。未指定は非シード。seed が bracket サイズを超える場合は非シード扱い。
+    const entrants = [
+      { name: "Team A", seed: 1 },
+      { name: "Team B", seed: 2 },
+      { name: "Team C", seed: 3 },
+      { name: "Team D", seed: 4 },
+      { name: "Team E" },             // 非シード
+      { name: "Team F" },             // 非シード
+      { name: "Team G" },             // 非シード
+      // 例：参加者が 7 名なので 8 枠に自動調整され、1 つ BYE が入ります
+    ];
+    // ========================================================================
+
+    // ---- ユーティリティ ----
+    const nextPowerOfTwo = (n) => 1 << Math.ceil(Math.log2(Math.max(2, n)));
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // 標準的な「スネーク方式」で 2^k 枠のシード配置順を生成
+    function seedOrder(size) {
+      if (size === 2) return [1, 2];
+      const prev = seedOrder(size / 2);
+      const mirror = prev.map(s => size + 1 - s);
+      const order = [];
+      for (let i = 0; i < prev.length; i++) {
+        order.push(prev[i], mirror[i]); // 交互に挿入して (1-8)(4-5)(2-7)(3-6) ... の形へ
+      }
+      return order;
+    }
+
+    // ブラケットを構築
+    function buildBracket(inputEntrants) {
+      const size = nextPowerOfTwo(inputEntrants.length);
+      const order = seedOrder(size);
+      const slots = Array(size).fill(null);
+
+      const seeded = inputEntrants
+        .filter(e => Number.isInteger(e.seed) && e.seed >= 1)
+        .sort((a, b) => a.seed - b.seed);
+
+      const unseeded = inputEntrants
+        .filter(e => !Number.isInteger(e.seed) || e.seed > size);
+
+      // シードを指定の位置へ
+      for (const e of seeded) {
+        if (e.seed <= size) {
+          const pos = order.indexOf(e.seed);
+          if (pos !== -1 && !slots[pos]) {
+            slots[pos] = { ...e };
+          }
+        }
+      }
+
+      // 非シードをランダムに埋める
+      shuffle(unseeded);
+      let ui = 0;
+      for (let i = 0; i < size; i++) {
+        if (!slots[i] && ui < unseeded.length) slots[i] = { ...unseeded[ui++] };
+      }
+
+      // 余り枠は BYE
+      for (let i = 0; i < size; i++) {
+        if (!slots[i]) slots[i] = { name: "BYE", bye: true };
+      }
+
+      // ラウンド構造を作成
+      const rounds = [];
+      let current = slots.map((p, i) => ({ player: p, slot: i }));
+      let roundNum = 1;
+
+      while (current.length > 1) {
+        const matches = [];
+        for (let i = 0; i < current.length; i += 2) {
+          matches.push({
+            round: roundNum,
+            a: { ...current[i] },
+            b: { ...current[i + 1] },
+            winner: null,
+          });
+        }
+        rounds.push(matches);
+        current = matches.map(m => ({ player: null, from: m })); // 次ラウンドのプレースホルダー
+        roundNum++;
+      }
+
+      const bracket = { size, seedOrder: order, slots, rounds };
+      fullyAutoAdvance(bracket); // BYE を自動で繰り上げ
+      return bracket;
+    }
+
+    // BYE を含む自動進行（詰められる所まで繰り返し）
+    function fullyAutoAdvance(bracket) {
+      let changed = true;
+      while (changed) {
+        changed = false;
+        bracket.rounds.forEach((matches, rIndex) => {
+          matches.forEach((m, mIndex) => {
+            if (!m.winner) {
+              const a = m.a.player, b = m.b.player;
+              if (a && b) {
+                const aBye = !!a.bye, bBye = !!b.bye;
+                if (aBye && !bBye) {
+                  setWinner(bracket, rIndex, mIndex, "b"); changed = true;
+                } else if (!aBye && bBye) {
+                  setWinner(bracket, rIndex, mIndex, "a"); changed = true;
+                }
+              }
+            }
+          });
+        });
+      }
+    }
+
+    function setWinner(bracket, rIndex, mIndex, side) {
+      const match = bracket.rounds[rIndex][mIndex];
+      match.winner = side;
+      const nextRound = bracket.rounds[rIndex + 1];
+      if (nextRound) {
+        const nextMatch = nextRound[Math.floor(mIndex / 2)];
+        const pos = (mIndex % 2 === 0) ? "a" : "b";
+        nextMatch[pos].player = match[side].player;
+      }
+    }
+
+    function pickWinner(bracket, rIndex, mIndex, side) {
+      setWinner(bracket, rIndex, mIndex, side);
+      fullyAutoAdvance(bracket);
+      render(bracket);
+    }
+
+    function displayName(p) {
+      if (!p) return "(未定)";
+      const base = p.name || "(未定)";
+      return Number.isInteger(p.seed) ? `[${p.seed}] ${base}` : base;
+    }
+
+    // 描画
+    function render(bracket) {
+      const container = document.getElementById("bracket");
+      container.innerHTML = "";
+
+      bracket.rounds.forEach((matches, rIndex) => {
+        const col = document.createElement("div");
+        col.className = "round";
+
+        const title = document.createElement("div");
+        title.className = "round-title";
+        title.textContent = rIndex === 0 ? "ラウンド1（初戦）" : `ラウンド ${rIndex + 1}`;
+        col.appendChild(title);
+
+        matches.forEach((m, mIndex) => {
+          const matchEl = document.createElement("div");
+          matchEl.className = "match";
+
+          ["a", "b"].forEach(side => {
+            const slot = m[side];
+            const item = document.createElement("div");
+            item.className = "participant";
+
+            const left = document.createElement("div");
+            left.textContent = displayName(slot.player);
+            if (slot.player && slot.player.bye) {
+              left.classList.add("bye");
+            }
+
+            const right = document.createElement("div");
+            right.className = "slot-index";
+            right.textContent = rIndex === 0 ? `#${slot.slot + 1}` : "";
+
+            item.appendChild(left);
+            item.appendChild(right);
+
+            // 勝者表示
+            if (m.winner === side) item.classList.add("winner");
+
+            // クリックで勝者確定（BYEは無効）
+            item.onclick = () => {
+              if (slot.player && slot.player.bye) return;
+              pickWinner(bracket, rIndex, mIndex, side);
+            };
+
+            matchEl.appendChild(item);
+          });
+
+          col.appendChild(matchEl);
+        });
+
+        container.appendChild(col);
+      });
+    }
+
+    // エクスポート（シンプルな JSON）
+    function exportJSON(bracket) {
+      const data = {
+        size: bracket.size,
+        seedOrder: bracket.seedOrder,
+        slots: bracket.slots.map(p => ({ name: p.name, seed: p.seed ?? null, bye: !!p.bye })),
+        rounds: bracket.rounds.map(ms => ms.map(m => ({
+          winnerSide: m.winner,
+          a: m.a.player ? { name: m.a.player.name, seed: m.a.player.seed ?? null, bye: !!m.a.player.bye } : null,
+          b: m.b.player ? { name: m.b.player.name, seed: m.b.player.seed ?? null, bye: !!m.b.player.bye } : null,
+        }))),
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "bracket.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // 非シードを再シャッフル（シード固定のまま）
+    function reshuffleNonSeeds(bracket, originalEntrants) {
+      const size = bracket.size;
+      const order = bracket.seedOrder;
+      // もとの参加者から再構築
+      const seeded = originalEntrants
+        .filter(e => Number.isInteger(e.seed) && e.seed >= 1)
+        .sort((a, b) => a.seed - b.seed);
+      const unseeded = originalEntrants
+        .filter(e => !Number.isInteger(e.seed) || e.seed > size);
+      shuffle(unseeded);
+      const slots = Array(size).fill(null);
+      for (const e of seeded) {
+        if (e.seed <= size) {
+          const pos = order.indexOf(e.seed);
+          if (pos !== -1 && !slots[pos]) slots[pos] = { ...e };
+        }
+      }
+      let ui = 0;
+      for (let i = 0; i < size; i++) {
+        if (!slots[i] && ui < unseeded.length) slots[i] = { ...unseeded[ui++] };
+      }
+      for (let i = 0; i < size; i++) {
+        if (!slots[i]) slots[i] = { name: "BYE", bye: true };
+      }
+      // 新しくラウンドを組み直し
+      const fresh = buildBracket(Object.values(slots).filter(Boolean));
+      currentBracket = fresh;
+      render(currentBracket);
+    }
+
+    // 初期化
+    let currentBracket = buildBracket(entrants);
+    render(currentBracket);
+
+    // UI ハンドラ
+    document.getElementById("export").onclick = () => exportJSON(currentBracket);
+    document.getElementById("shuffle").onclick = () => reshuffleNonSeeds(currentBracket, entrants);
+  </script>
+</body>
+</html>

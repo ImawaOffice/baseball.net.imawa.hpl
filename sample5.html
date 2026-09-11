@@ -1,0 +1,402 @@
+
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>シード付きトーナメント表（テーブル＋線）</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", Arial, "Helvetica Neue"; background:#f7f7f9; margin:20px; }
+    h1 { font-size: 20px; margin-bottom: 12px; }
+    .toolbar { display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 14px; }
+    .panel { background:white; border:1px solid #ddd; border-radius:10px; padding:12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .panel h2 { font-size:14px; margin:0 0 8px; color:#333; }
+    label { font-size:13px; color:#444; }
+    input[type="number"], textarea { width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:8px; padding:8px; font-size:13px; background:#fff; }
+    textarea { min-height: 140px; }
+    button { padding:8px 12px; border-radius:8px; border:1px solid #bbb; background:white; cursor:pointer; font-size:13px; }
+    button:hover { background:#f0f0f3; }
+
+    /* ブラケットテーブル */
+    .wrap { overflow-x:auto; background:white; border:1px solid #ddd; border-radius:10px; padding:12px; }
+    table.bracket { border-collapse: separate; border-spacing: 0; width: max-content; }
+    table.bracket td { padding:0; vertical-align: middle; }
+
+    /* 各ラウンドの列幅（チーム列／コネクタ列） */
+    .col-team { min-width: 200px; }
+    .col-conn { width: 40px; position: relative; }
+
+    /* 試合セル（チーム列） */
+    .match-cell { border:1px solid #ddd; border-radius:8px; background:#fff; margin:4px; padding:6px 8px; }
+    .slot { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:4px 6px; border-radius:6px; cursor:pointer; }
+    .slot:hover { background:#f0f6ff; }
+    .seed-badge { font-size:11px; color:#555; background:#eef; border:1px solid #cde; border-radius:4px; padding:0 6px; }
+    .bye { color:#999; }
+    .winner { background:#e7f6e7; border:1px solid #cbe9cb; }
+
+    /* コネクタ線：縦＋左右の枝（擬似要素で描画） */
+    .connector { position: relative; }
+    .connector .vline { position:absolute; left:50%; top:0; bottom:0; width:2px; background:#888; transform: translateX(-1px); }
+    .connector::before, .connector::after {
+      content:""; position:absolute; width:18px; border-top: 2px solid #888;
+    }
+    /* 左右の枝の位置（セル高さの 1/4 と 3/4 に枝を出す）*/
+    .connector::before { left:0; right:auto; top:25%; }
+    .connector::after  { right:0; left:auto; top:75%; }
+
+    /* 最終列には右枝を出さない */
+    .connector.final::after { display:none; }
+
+    .legend { font-size:12px; color:#666; margin-top:6px; }
+    .round-title { font-size:12px; color:#555; margin: 0 6px 6px; }
+  </style>
+</head>
+<body>
+  <h1>シード枠付きトーナメント（テーブル表示＋線付き）</h1>
+
+  <div class="toolbar">
+    <div class="panel">
+      <h2>入力</h2>
+      <div style="display:flex; gap:8px; align-items:end;">
+        <div style="flex:1;">
+          <label for="teamCount">登録されたチーム数（数のみ）：</label>
+          <input id="teamCount" type="number" min="2" step="1" placeholder="例：14" />
+        </div>
+        <div>
+          <button id="generate">トーナメント表を生成</button>
+        </div>
+      </div>
+      <div style="margin-top:10px;">
+        <label for="teamList">チーム名（任意・1行1チーム／上から仮シード1→n）：</label>
+        <textarea id="teamList" placeholder="Team A
+Team B
+Team C
+Team D"></textarea>
+      </div>
+      <div class="legend">※ チーム名欄が空のときは <code>Team 1..N</code> を自動作成します。<br>
+        ※ 登録されたチーム数が 2 の乗数でない場合、枠数を繰り上げ（例：14→16）し、BYEを上位シードに割り当てます。</div>
+    </div>
+
+    <div class="panel">
+      <h2>操作</h2>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button id="export">JSONエクスポート</button>
+        <button id="reset">勝者リセット</button>
+        <button id="shuffle">非シードを再シャッフル</button>
+      </div>
+      <div class="legend">セル内の参加者名（A/B）をクリックすると、勝者を確定して次ラウンドへ進みます。BYEは自動で不戦勝処理します。</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="round-title" id="roundTitle"></div>
+    <table id="bracketTable" class="bracket"></table>
+  </div>
+
+  <script>
+    // ========= ユーティリティ =========
+    const nextPowerOfTwo = (n) => 1 << Math.ceil(Math.log2(Math.max(2, n)));
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+    // スネーク方式のシード順を生成（2^k 枠）
+    function seedOrder(size) {
+      if (size === 2) return [1, 2];
+      const prev = seedOrder(size / 2);
+      const mirror = prev.map(s => size + 1 - s);
+      const order = [];
+      for (let i = 0; i < prev.length; i++) {
+        order.push(prev[i], mirror[i]);
+      }
+      return order;
+    }
+
+    // ========= ブラケット構築 =========
+    function buildEntrantsByInputs() {
+      let names = document.getElementById("teamList").value
+        .split("\n")
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+
+      // 入力されたチーム数（数値）が優先。未入力なら名前行数。
+      const countInput = parseInt(document.getElementById("teamCount").value, 10);
+      const n = Number.isInteger(countInput) && countInput > 0 ? countInput : names.length;
+
+      if (names.length === 0) {
+        names = Array.from({ length: n }, (_, i) => `Team ${i + 1}`);
+      } else if (names.length !== n) {
+        // 名前行数と数値が食い違う場合、数値に合わせて切り詰めまたは補完
+        if (names.length > n) names = names.slice(0, n);
+        else names = names.concat(Array.from({ length: n - names.length }, (_, i) => `Team ${names.length + i + 1}`));
+      }
+
+      // 仮シードは入力順（1..n）
+      return names.map((name, i) => ({ name, seed: i + 1 }));
+    }
+
+    // entrants からシード配置と BYE を付与してブラケット構築
+    function buildBracket(rawEntrants) {
+      const registered = rawEntrants.length;
+      const size = nextPowerOfTwo(registered);
+      const order = seedOrder(size);
+      const slots = Array(size).fill(null);
+
+      // シードとして 1..registered を割り当て（残りは BYE）
+      const seeded = rawEntrants
+        .filter(e => Number.isInteger(e.seed) && e.seed >= 1)
+        .sort((a, b) => a.seed - b.seed);
+
+      // シードを所定位置へ（スネークの序列に合わせて）
+      for (const e of seeded) {
+        if (e.seed <= size) {
+          const pos = order.indexOf(e.seed);
+          if (pos !== -1 && !slots[pos]) slots[pos] = { ...e };
+        }
+      }
+
+      // 足りない分は BYE として自動付与
+      for (let i = 0; i < size; i++) {
+        if (!slots[i]) slots[i] = { name: "BYE", bye: true, seed: null };
+      }
+
+      // ラウンド構造（試合の木）
+      const rounds = [];
+      let current = slots.map((p, i) => ({ player: p, slot: i }));
+      let r = 0;
+      while (current.length > 1) {
+        const matches = [];
+        for (let i = 0; i < current.length; i += 2) {
+          matches.push({
+            round: r + 1,
+            a: { ...current[i] },
+            b: { ...current[i + 1] },
+            winner: null, // "a" or "b"
+          });
+        }
+        rounds.push(matches);
+        current = matches.map(m => ({ player: null, from: m }));
+        r++;
+      }
+
+      const bracket = { size, seedOrder: order, slots, rounds };
+      autoAdvanceBYE(bracket);
+      return bracket;
+    }
+
+    // BYE を含む自動進行
+    function autoAdvanceBYE(bracket) {
+      let changed = true;
+      while (changed) {
+        changed = false;
+        bracket.rounds.forEach((matches, rIndex) => {
+          matches.forEach((m, mIndex) => {
+            if (!m.winner) {
+              const a = m.a.player, b = m.b.player;
+              if (a && b) {
+                const aBye = !!a.bye, bBye = !!b.bye;
+                if (aBye && !bBye) { setWinner(bracket, rIndex, mIndex, "b"); changed = true; }
+                else if (!aBye && bBye) { setWinner(bracket, rIndex, mIndex, "a"); changed = true; }
+              }
+            }
+          });
+        });
+      }
+    }
+
+    function setWinner(bracket, rIndex, mIndex, side) {
+      const match = bracket.rounds[rIndex][mIndex];
+      match.winner = side;
+      const nextRound = bracket.rounds[rIndex + 1];
+      if (nextRound) {
+        const nextMatch = nextRound[Math.floor(mIndex / 2)];
+        const pos = (mIndex % 2 === 0) ? "a" : "b";
+        nextMatch[pos].player = match[side].player;
+      }
+    }
+
+    function pickWinner(bracket, rIndex, mIndex, side) {
+      setWinner(bracket, rIndex, mIndex, side);
+      autoAdvanceBYE(bracket);
+      renderTable(bracket);
+    }
+
+    function displayName(p) {
+      if (!p) return "(未定)";
+      const base = p.name || "(未定)";
+      return Number.isInteger(p.seed) ? `[${p.seed}] ${base}` : base;
+    }
+
+    // ========= テーブル描画（線付き） =========
+    function renderTable(bracket) {
+      const table = document.getElementById("bracketTable");
+      const rounds = bracket.rounds.length; // R = log2(size)
+      const size = bracket.size;
+      table.innerHTML = "";
+
+      document.getElementById("roundTitle").textContent = `枠数：${size}（ラウンド数：${rounds}）`;
+
+      // 行ごとにテーブルを構築
+      for (let row = 0; row < size; row++) {
+        const tr = document.createElement("tr");
+
+        for (let r = 0; r < rounds; r++) {
+          // --- チーム列（round r の表示） ---
+          const spanTeam = 1 << r; // rowspan
+          if (row % spanTeam === 0) {
+            const tdTeam = document.createElement("td");
+            tdTeam.className = "col-team";
+
+            const matchIndex = Math.floor(row / (1 << (r + 1))); // このラウンドの何試合目か
+            const match = bracket.rounds[r][matchIndex];
+
+            // チームセルの内容：A/B スロットの2行（クリックで勝者確定）
+            const cell = document.createElement("div");
+            cell.className = "match-cell";
+
+            const slotA = document.createElement("div");
+            slotA.className = "slot";
+            slotA.textContent = match.a.player ? displayName(match.a.player) : "(未定 A)";
+            if (match.a.player && match.a.player.bye) slotA.classList.add("bye");
+            if (match.winner === "a") slotA.classList.add("winner");
+
+            const slotB = document.createElement("div");
+            slotB.className = "slot";
+            slotB.textContent = match.b.player ? displayName(match.b.player) : "(未定 B)";
+            if (match.b.player && match.b.player.bye) slotB.classList.add("bye");
+            if (match.winner === "b") slotB.classList.add("winner");
+
+            slotA.onclick = () => { if (!(match.a.player && match.a.player.bye)) pickWinner(bracket, r, matchIndex, "a"); };
+            slotB.onclick = () => { if (!(match.b.player && match.b.player.bye)) pickWinner(bracket, r, matchIndex, "b"); };
+
+            cell.appendChild(slotA);
+            cell.appendChild(slotB);
+
+            tdTeam.appendChild(cell);
+            tdTeam.rowSpan = spanTeam;
+            tr.appendChild(tdTeam);
+          }
+
+          // --- コネクタ列（round r と r+1 の間）---
+          const isFinal = (r === rounds - 1);
+          if (!isFinal) {
+            const spanConn = 1 << (r + 1);
+            if (row % spanConn === 0) {
+              const tdConn = document.createElement("td");
+              tdConn.className = "col-conn";
+              const conn = document.createElement("div");
+              conn.className = "connector" + (isFinal ? " final" : "");
+              const v = document.createElement("div");
+              v.className = "vline";
+              conn.appendChild(v);
+              tdConn.appendChild(conn);
+              tdConn.rowSpan = spanConn;
+              tr.appendChild(tdConn);
+            }
+          }
+        }
+
+        // --- 最終列（優勝表示） ---
+        if (row === 0) {
+          const tdFinal = document.createElement("td");
+          tdFinal.className = "col-team";
+          tdFinal.rowSpan = size;
+
+          const finalCell = document.createElement("div");
+          finalCell.className = "match-cell";
+
+          const finalMatch = bracket.rounds[rounds - 1][0];
+          const champ = finalMatch.winner ? finalMatch[finalMatch.winner].player : null;
+
+          const title = document.createElement("div");
+          title.style.fontWeight = "600";
+          title.style.marginBottom = "6px";
+          title.textContent = "優勝";
+
+          const champDiv = document.createElement("div");
+          champDiv.className = "slot";
+          champDiv.textContent = champ ? displayName(champ) : "(未確定)";
+          if (champ) champDiv.classList.add("winner");
+
+          finalCell.appendChild(title);
+          finalCell.appendChild(champDiv);
+          tdFinal.appendChild(finalCell);
+          tr.appendChild(tdFinal);
+        }
+
+        table.appendChild(tr);
+      }
+    }
+
+    // ========= UIハンドラ =========
+    let currentEntrants = [];
+    let currentBracket = null;
+
+    function regenerate() {
+      currentEntrants = buildEntrantsByInputs();
+      currentBracket = buildBracket(currentEntrants);
+      renderTable(currentBracket);
+    }
+    function exportJSON() {
+      if (!currentBracket) return;
+      const data = {
+        size: currentBracket.size,
+        seedOrder: currentBracket.seedOrder,
+        slots: currentBracket.slots.map(p => ({ name: p.name, seed: p.seed ?? null, bye: !!p.bye })),
+        rounds: currentBracket.rounds.map(ms => ms.map(m => ({
+          winnerSide: m.winner,
+          a: m.a.player ? { name: m.a.player.name, seed: m.a.player.seed ?? null, bye: !!m.a.player.bye } : null,
+          b: m.b.player ? { name: m.b.player.name, seed: m.b.player.seed ?? null, bye: !!m.b.player.bye } : null,
+        }))),
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "bracket.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    function resetWinners() {
+      if (!currentBracket) return;
+      currentBracket.rounds.forEach(r => r.forEach(m => { m.winner = null; }));
+      // 次ラウンドのプレースホルダーも初期化
+      for (let r = 0; r < currentBracket.rounds.length - 1; r++) {
+        const next = currentBracket.rounds[r + 1];
+        next.forEach(nm => { nm.a.player = null; nm.b.player = null; });
+      }
+      autoAdvanceBYE(currentBracket);
+      renderTable(currentBracket);
+    }
+    function reshuffleNonSeeds() {
+      if (!currentEntrants.length) return;
+      // シードは 1..n 固定、非シードが存在しない構成のためシャッフルは名前順の再配列（任意）
+      // 明示シードをつけたい場合は teamList に [3] Team X のような表記にして拡張可能
+      shuffle(currentEntrants);
+      // シャッフル後は seed 付け直し（入力順を仮シードにする）
+      currentEntrants = currentEntrants.map((e, i) => ({ ...e, seed: i + 1 }));
+      currentBracket = buildBracket(currentEntrants);
+      renderTable(currentBracket);
+    }
+
+    document.getElementById("generate").onclick = regenerate;
+    document.getElementById("export").onclick = exportJSON;
+    document.getElementById("reset").onclick = resetWinners;
+    document.getElementById("shuffle").onclick = reshuffleNonSeeds;
+
+    // 初期表示（例示）
+    document.getElementById("teamCount").value = 7;
+    document.getElementById("teamList").value = `Team A
+Team B
+Team C
+Team D
+Team E
+Team F
+Team G`;
+    regenerate();
+  </script>
+</body>
+</html>
+``
