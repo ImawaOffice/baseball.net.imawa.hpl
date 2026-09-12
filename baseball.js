@@ -14,12 +14,14 @@ document.addEventListener( 'DOMContentLoaded', function() {
 });
 
 // 権限マスタ管理画面
-// 動的に読み込まれた画面でも動作するようイベント委譲を使用する。
+// 画面が後からDOMへ追加される場合にも対応するため、documentへイベント委譲する。
 document.addEventListener( 'click', function( event ) {
 	var button = event.target.closest( '#role-list .edit-button' );
 	if ( !button ) {
 		return;
 	}
+
+	console.log( 'role-list: edit' );
 
 	var row = button.closest( 'tr' );
 	var roleList = document.getElementById( 'role-list' );
@@ -35,6 +37,7 @@ document.addEventListener( 'click', function( event ) {
 	var saveButton = roleList.querySelector( '#save_button' );
 
 	if ( !action || !roleId || !roleName || !roleLevel || !isEnabled || !saveButton ) {
+		console.error( 'role-list: form elements not found' );
 		return;
 	}
 
@@ -54,6 +57,8 @@ document.addEventListener( 'click', function( event ) {
 		return;
 	}
 
+	console.log( 'role-list: new' );
+
 	var roleList = document.getElementById( 'role-list' );
 	if ( !roleList ) {
 		return;
@@ -67,6 +72,7 @@ document.addEventListener( 'click', function( event ) {
 	var saveButton = roleList.querySelector( '#save_button' );
 
 	if ( !action || !roleId || !roleName || !roleLevel || !isEnabled || !saveButton ) {
+		console.error( 'role-list: form elements not found' );
 		return;
 	}
 
@@ -92,14 +98,10 @@ async function PDFtoImage( $p_PDF, $p_CanvasId, $p_ImageId ){
 	pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
 
 	const pdf = await pdfjsLib.getDocument( url ).promise;
-
 	const container = document.getElementById( $p_ImageId );
 	container.innerHTML = "";
-
 	const canvas = document.getElementById( $p_CanvasId );
 	const ctx = canvas.getContext( '2d' );
-
-	const page = await pdf.getPage( 1 );
 	const scale = 2.0;
 
 	for ( let pageNo = 1; pageNo <= pdf.numPages; pageNo++ ) {
@@ -107,7 +109,6 @@ async function PDFtoImage( $p_PDF, $p_CanvasId, $p_ImageId ){
 		const viewport = page.getViewport( { scale } );
 		canvas.width = Math.floor( viewport.width );
 		canvas.height = Math.floor( viewport.height );
-
 		await page.render( { canvasContext: ctx, viewport } ).promise;
 
 		const img = document.createElement( "img" );
