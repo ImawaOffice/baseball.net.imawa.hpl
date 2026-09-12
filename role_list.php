@@ -204,7 +204,7 @@ if( file_exists( $filename ) ) {
             <input type="hidden" id="action" name="action" value="add">
             <input type="hidden" id="role_id" name="role_id" value="">
 
-            <div class="maintenanceForm">
+            <div class="maintenanceForm display_show">
                 <div class="form-group">
                     <label for="role_name">権限名</label>
                     <input type="text" id="role_name" name="role_name" maxlength="255" required>
