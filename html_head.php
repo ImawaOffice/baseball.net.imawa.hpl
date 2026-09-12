@@ -7,8 +7,8 @@
 <meta name="description" content="">
 <script src="https://kit.fontawesome.com/857e83642d.js" crossorigin="anonymous"></script>
 <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">-->
-<link rel="stylesheet" href="baseball.css<?php echo "?s=" . date( "s" ); ?>">
-<script src="./baseball.js<?php echo "?s=" . date( "s" ); ?>" defer></script>
+<link rel="stylesheet" href="baseball.css<?php echo "?s=" . time(); ?>">
+<script src="./baseball.js<?php echo "?s=" . time(); ?>" defer></script>
 <script src="https://www.imawa.net/jquery/3.7.1/jquery-3.7.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
 <title>[HPL]Baseball</title>
