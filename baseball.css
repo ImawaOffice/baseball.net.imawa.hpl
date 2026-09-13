@@ -43,8 +43,19 @@ form button {
 	background-color: #007BFF;
 	color: #fff;
 	border: none;
-	border-radius: 4px;
+	border-radius: 6px;
 	cursor: pointer;
+	box-shadow: 0 2px 0 rgba(0,0,0,0.15);
+	transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+form button:hover,
+form button:focus-visible {
+	background-color: #005ecb;
+}
+
+form button:active {
+	transform: translateY(1px);
 }
 
 form input[ required ],
@@ -216,34 +227,40 @@ main.page-main h2 {
 /* ハンバーガーメニュー用 */
 .nav-toggle {
 	display: none;
-	position: fixed;
+	position: absolute;
+	top: 12px;
+	left: 10px;
 	margin-left: 12px;
+	margin-left: 0;
 	z-index: 2000;
-	width: 40px;
-	height: 40px;
+	width: 44px;
+	height: 44px;
 	background: none;
-	border: none;
+	border: 1px solid rgba(255,255,255,0.25);
+	border-radius: 6px;
 	cursor: pointer;
-	position: relative;
+	padding: 0;
+	box-sizing: border-box;
+	overflow: visible;
 }
 
 .nav-toggle span {
 	display: block;
 	position: absolute;
-	width: 28px;
+	width: 24px;
 	height: 4px;
 	background: #fff;
 	border-radius: 2px;
 	transition: 0.3s;
-	top: 18px;
-	left: 6px;
+	top: 20px;
+	left: 9px;
 }
 .nav-toggle span::before,
 .nav-toggle span::after {
 	content: '';
 	display: block;
 	position: absolute;
-	width: 28px;
+	width: 24px;
 	height: 4px;
 	background: #fff;
 	border-radius: 2px;
@@ -258,28 +275,243 @@ main.page-main h2 {
 }
 
 @media ( max-width: 900px ) {
+	header.page-header {
+		min-height: 64px;
+		position: relative;
+	}
+
+	header.page-header .container {
+		width: 100%;
+		min-height: 64px;
+	}
+
 	.nav-menu {
-	justify-content: flex-start;
+		justify-content: flex-start;
 		flex-direction: column;
-		align-items: flex-start;
+		align-items: stretch;
 		position: fixed;
 		left: -100vw;
 		top: 0;
-		width: 50vw;
+		width: min( 82vw, 320px );
 		height: 100vh;
 		background: #222;
-		padding-top: 60px;
-		transition: left 0.3s;
+		padding: 60px 12px 24px;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		overscroll-behavior: contain;
+		box-sizing: border-box;
+		transition: left 0.3s ease;
 		z-index: 1000;
 	}
 	.nav-menu li {
-		margin-left: 12px;
+		width: 100%;
+		margin-left: 0;
+	}
+	.nav-menu > li {
+		width: 100%;
+	}
+	.nav-menu a {
+		width: 100%;
+		padding: 12px 14px;
+		box-sizing: border-box;
+		white-space: normal;
+	}
+	.dropdown-menu {
+		position: static;
+		display: none;
+		width: 100%;
+		min-width: 0;
+		background: #2d2d2d;
+		box-shadow: none;
+		margin-top: 4px;
+		max-height: 0;
+		overflow: hidden;
+		border-radius: 4px;
+	}
+	.dropdown:hover > .dropdown-menu {
+		display: none;
+	}
+	.dropdown.open > .dropdown-menu {
+		display: block;
+		max-height: 55vh;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+	.dropdown-menu li {
+		width: 100%;
+	}
+	.dropdown-menu li a {
+		display: block;
+		padding: 12px 14px 12px 22px;
+		border-top: 1px solid rgba(255,255,255,0.1);
 	}
 	.nav-menu.open {
 		left: 0;
 	}
 	.nav-toggle {
 		display: block;
+		position: absolute;
+		left: 10px;
+		top: 12px;
+		margin-left: 0;
+		overflow: visible;
+	}
+}
+
+/* =========================================================
+ *  iPhone / モバイル表示対応
+ * ========================================================= */
+@media ( max-width: 480px ) {
+	body {
+		font-size: 16px;
+	}
+
+	.container {
+		width: 92%;
+	}
+
+	.role-list .container {
+		width: 94%;
+	}
+
+	form .form-group {
+		display: block;
+		margin-bottom: 16px;
+	}
+
+	form .form-group label {
+		display: block;
+		width: 100%;
+		text-align: left;
+		padding-right: 0;
+		margin-bottom: 6px;
+	}
+
+	form .form-group input[ type="text" ],
+	form .form-group input[ type="number" ],
+	form .form-group input[ type="email" ],
+	form .form-group input[ type="tel" ],
+	form .form-group input[ type="password" ],
+	form .form-group textarea {
+		width: 100%;
+	}
+
+	form button,
+	form .form-group button {
+		width: 100%;
+		min-height: 44px;
+		font-size: 16px;
+	}
+
+	form input[ type="checkbox" ] {
+		width: 20px;
+		height: 20px;
+	}
+
+	#roleTable {
+		display: block;
+		width: 100%;
+		border: none;
+	}
+
+	#roleTable thead {
+		display: none;
+	}
+
+	#roleTable tbody {
+		display: block;
+		width: 100%;
+	}
+
+	#roleTable tr {
+		display: block;
+		width: 100%;
+		margin-bottom: 14px;
+		padding: 14px 12px;
+		background: #fff;
+		border: 1px solid #dfe3e8;
+		border-radius: 12px;
+		box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+	}
+
+	#roleTable td {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		width: 100%;
+		padding: 8px 0;
+		border: none;
+		border-bottom: 1px solid #eef1f4;
+		font-size: 14px;
+		text-align: left;
+	}
+
+	#roleTable td:last-child {
+		border-bottom: none;
+	}
+
+	#roleTable td::before {
+		content: attr( data-label );
+		font-weight: 700;
+		color: #4b5563;
+		min-width: 84px;
+		flex-shrink: 0;
+	}
+
+	#roleTable td button {
+		margin-left: auto;
+		min-width: 92px;
+		min-height: 44px;
+		padding: 10px 16px;
+	}
+
+	.role-toolbar {
+		justify-content: stretch;
+		margin-bottom: 16px;
+	}
+
+	.role-toolbar .primary-button {
+		display: block;
+		width: 100%;
+		min-height: 48px;
+		font-size: 16px;
+		font-weight: 700;
+	}
+
+	.dialog {
+		width: min( 94vw, 520px );
+		max-height: 92vh;
+	}
+
+	.dialog-header {
+		padding: 14px 14px 10px;
+	}
+
+	.close-dialog {
+		width: 40px;
+		height: 40px;
+	}
+
+	.modal-form {
+		padding: 14px;
+	}
+
+	.modal-actions {
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.modal-actions button {
+		width: 100%;
+		min-height: 46px;
+		font-size: 16px;
+	}
+
+	main.page-main h2 {
+		font-size: 1.4rem;
+		margin-top: 20px;
+		margin-bottom: 18px;
 	}
 }
 
@@ -288,7 +520,8 @@ main.page-main h2 {
  * ========================================================= */
 footer.page-footer {
 	text-align: center;
-	margin-top: 24px;;
+	margin-top: auto;
+	padding-top: 24px;
 }
 
 footer .footer-nav{
@@ -551,16 +784,146 @@ dd.information-title {
 	padding: 8px;
 }
 
+.edit-button {
+	display: inline-block;
+	padding: 8px 14px;
+	background: linear-gradient(180deg, #2d9cdb 0%, #1b7fc4 100%);
+	color: #fff;
+	font-size: 14px;
+	font-weight: 700;
+	border: 1px solid #176aa5;
+	border-radius: 6px;
+	cursor: pointer;
+	box-shadow: 0 2px 0 rgba(0,0,0,0.12);
+	min-width: 72px;
+}
+
+.edit-button:hover,
+.edit-button:focus-visible {
+	background: linear-gradient(180deg, #1b7fc4 0%, #155f9e 100%);
+}
+
 .dialog {
-  position: fixed;
-  inset: 0;
+  width: min( 90vw, 520px );
+  max-height: 90vh;
   margin: auto;
-  padding: 1.5rem;
-  border-radius: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.dialog.is-processing::after {
+  content: "処理中...";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.75);
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 12px;
 }
 
 .dialog::backdrop {
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.45);
+}
+
+.dialog-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 20px 12px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.dialog-header h3 {
+	font-size: 1.1rem;
+	margin: 0;
+}
+
+.close-dialog {
+	width: 36px;
+	height: 36px;
+	background: #f3f4f6;
+	color: #111827;
+	border-radius: 50%;
+	font-size: 24px;
+	line-height: 1;
+	padding: 0;
+}
+
+.modal-form {
+	padding: 20px;
+}
+
+.modal-form .form-group {
+	display: block;
+	margin-bottom: 16px;
+}
+
+.modal-form .form-group label {
+	display: block;
+	width: 100%;
+	text-align: left;
+	margin-bottom: 6px;
+	padding-right: 0;
+}
+
+.modal-form .form-group input[ type="text" ],
+.modal-form .form-group input[ type="number" ],
+.modal-form .form-group input[ type="email" ],
+.modal-form .form-group input[ type="tel" ],
+.modal-form .form-group input[ type="password" ],
+.modal-form .form-group textarea {
+	width: 100%;
+}
+
+.modal-form .checkbox-group {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.modal-form .checkbox-group label {
+	width: auto;
+	margin-bottom: 0;
+}
+
+.modal-form .checkbox-group input {
+	width: 20px;
+	height: 20px;
+}
+
+.modal-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.secondary-button {
+	background-color: #6c757d !important;
+}
+
+.role-toolbar {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 12px;
+}
+
+.primary-button {
+	padding: 10px 16px;
+	background-color: #007BFF;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 15px;
+	font-weight: 600;
 }
 
 .dialogTable {
@@ -594,6 +957,60 @@ dd.information-title {
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
+}
+
+@media ( max-width: 480px ) {
+	.role-toolbar {
+		justify-content: stretch;
+		margin-bottom: 16px;
+	}
+
+	.role-toolbar .primary-button {
+		display: block;
+		width: 100%;
+		min-height: 48px;
+		font-size: 16px;
+		font-weight: 700;
+	}
+
+	#roleTable td button,
+	.edit-button {
+		min-width: 92px;
+		min-height: 44px;
+		padding: 10px 16px;
+	}
+
+	.dialog {
+		width: min( 94vw, 520px );
+		max-height: 92vh;
+	}
+
+	.dialog-header {
+		padding: 14px 14px 10px;
+	}
+
+	.dialog-header .close-dialog {
+		width: 40px;
+		height: 40px;
+		min-width: 40px;
+		min-height: 40px;
+	}
+
+	.modal-form {
+		padding: 14px;
+	}
+
+	.modal-actions {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.modal-actions button {
+		width: 100%;
+		min-height: 46px;
+		font-size: 16px;
+	}
 }
 
 .display_none {
