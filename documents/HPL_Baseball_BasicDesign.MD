@@ -11,19 +11,19 @@
 		2. [開発環境](#開発環境)
 			1. [データベース作成](#データベース作成)
 		3. [1.2.1. ER図](#121-er図)
-		4. [1.2.2. information ( お知らせテーブル )](#122-information--お知らせテーブル-)
+		4. [1.2.2. baseball\_information ( お知らせテーブル )](#122-baseball_information--お知らせテーブル-)
 		5. [1.2.3. baseball\_role ( 権限テーブル )](#123-baseball_role--権限テーブル-)
 		6. [1.2.4. baseball\_tournament ( 大会テーブル )](#124-baseball_tournament--大会テーブル-)
-		7. [1.2.4. baseball\_user ( ユーザーテーブル )](#124-baseball_user--ユーザーテーブル-)
-		8. [1.2.5. user\_logs（ 操作履歴 ）](#125-user_logs-操作履歴-)
-		9. [1.2.6. teams](#126-teams)
-		10. [1.2.7. players](#127-players)
-		11. [1.2.8. games](#128-games)
-		12. [1.2.9. game\_scores](#129-game_scores)
-		13. [1.2.10. player\_stats](#1210-player_stats)
-		14. [1.2.11. batteries](#1211-batteries)
-		15. [1.2.12. starting\_members](#1212-starting_members)
-		16. [1.2.13. reserve\_members](#1213-reserve_members)
+		7. [1.2.5. baseball\_user ( ユーザーテーブル )](#125-baseball_user--ユーザーテーブル-)
+		8. [1.2.6. 運用ログ（Log/ 配下のファイル出力）](#126-運用ログlog-配下のファイル出力)
+		9. [1.2.7. teams](#127-teams)
+		10. [1.2.8. players](#128-players)
+		11. [1.2.9. games](#129-games)
+		12. [1.2.10. game\_scores](#1210-game_scores)
+		13. [1.2.11. player\_stats](#1211-player_stats)
+		14. [1.2.12. batteries](#1212-batteries)
+		15. [1.2.13. starting\_members](#1213-starting_members)
+		16. [1.2.14. reserve\_members](#1214-reserve_members)
 	3. [1.3. 2-4. 画面設計（概要）](#13-2-4-画面設計概要)
 	4. [1.4. 2-5. 処理フロー例](#14-2-5-処理フロー例)
 		1. [1.4.1. 2-5-1. ログイン処理](#141-2-5-1-ログイン処理)
@@ -89,13 +89,18 @@
 
 ## 1. 基本設計書
 
+> 本書は現行ソースコードと DB 定義を正本として扱い、実装済みのテーブル・処理・画面構成を中心に整理した内容である。現行実装に存在しないテーブルや試作ロジックは、将来拡張または補足として扱う。
+
 ### 1.1. システム構成
 
 - バックエンド：PHP 8.x
-- データベース：SQLite
-- フロントエンド：HTML, CSS, JavaScript（Bootstrap想定）
-- セッション管理：PHP標準セッション機構
-- 組み合わせ表インポート機能（CSV/Excel等対応予定）
+- 設定DB：SQLite（`config` / `menu` 等）
+- 業務DB：MySQL（`baseball_*` 系テーブル）
+- フロントエンド：HTML, CSS, JavaScript
+- セッション管理：PHP 標準セッション
+- メール送信：PHPMailer
+- ログ出力：`Log/` 配下のファイル
+- 追加機能の扱い：CSV/Excel などのインポートや高度なトーナメント計算は、将来拡張として想定されるが、現行実装の対象外とする
 
 ### 1.2. データベース設計
 
@@ -144,7 +149,6 @@ mysql> FLUSH PRIVILEGES;
 
 mysql> GRANT ALL PRIVILEGES ON `LAA0938815-hpl`.* TO 'LAA0938815'@'%' WITH GRANT OPTION;
 mysql> FLUSH PRIVILEGES;
-
 ```
 
 #### 1.2.1. ER図
@@ -188,7 +192,7 @@ erDiagram
 
 ```
 
-#### 1.2.2. information ( お知らせテーブル )
+#### 1.2.2. baseball_information ( お知らせテーブル )
 
 | カラム名 | 項目名 | 型  | 長さ | キー | 必須 | 初期値 | 説明 |
 | :------ | :----- | :-- | --: | :--: | :--: | :---  | :-- |
@@ -210,7 +214,7 @@ erDiagram
 | :------ | :----- | :-- | --: | :--: | :--: | :---  | :-- |
 | role_id | 権限ID | INT | 4 | PK | 〇 | AUTO_INCREMENT | 一意のID |
 | role_name | 権限名称 | VARCHAR | 255 | - | 〇 | - | 権限の名称 |
-| role_level | 権限レベル | INT | 4 | UK | 〇 | - | 0: 一般, 1:登録済み, 10: 監督, 100: 本部, 1000: システム管理者 |
+| role_level | 権限レベル | INT | 4 | UK | 〇 | - | 0: 一般, 1: 登録済み, 10: 監督, 100: 本部, 1000: システム管理者 |
 | is_enabled | 有効フラグ | INT      | 4   | - | 〇 | 0 | レコードの有効性( 0: 無効, 1: 有効 ) |
 | created_at | 作成日時   | DATETIME | 8   | - | 〇 | CURRENT_TIMESTAMP | データを作成した日時 |
 | created_by | 作成者     | VARCHAR  | 255 | - | -  | - | データを作成したユーザー(プログラム) |
@@ -218,54 +222,62 @@ erDiagram
 | updated_by | 更新者     | VARCHAR  | 255 | - | -  | - | データを更新したユーザー(プログラム) |
 
 #### 1.2.4. baseball_tournament ( 大会テーブル )
+
 | カラム名 | 項目名 | 型  | 長さ | キー | 必須 | 初期値 | 説明 |
 | :------ | :----- | :-- | --: | :--: | :--: | :---  | :-- |
-| tournament_id         | 大会ID        | INT | 4 | PK | 〇 | AUTO_INCREMENT | 一意のID  |
-| tournament_title      | 大会タイトル	 | VARCHAR | 255 | - | 〇 |  | 第○○回などのタイトル |
-| tournament_text       | 大会名        | VARCHAR | 255 | - | 〇 |  | ○○大会などの名称 |
-| tournament_start_date | 大会開始日     | DATE | 3 | -  | 〇 |  | 大会の開催日  |
-| tournament_end_date   | 大会終了日     | DATE | 3 | -  | 〇 |  | 大会の終了日 |
-| is_enabled | 有効フラグ | INT      | 4   | - | 〇 | 0 | レコードの有効性( 0: 無効, 1: 有効 ) |
-| created_at | 作成日時   | DATETIME | 8   | - | 〇 | CURRENT_TIMESTAMP | データを作成した日時 |
-| created_by | 作成者     | VARCHAR  | 255 | - | -  | - | データを作成したユーザー(プログラム) |
-| updated_at | 更新日時   | DATETIME | 8   | - | 〇 | CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | データを更新した日時 |
-| updated_by | 更新者     | VARCHAR  | 255 | - | -  | - | データを更新したユーザー(プログラム) |
+| tournament_id | 大会ID | INT | 4 | PK | 〇 | AUTO_INCREMENT | 一意のID |
+| tournament_title | 大会タイトル | VARCHAR | 255 | - | 〇 | - | 第○回などのタイトル |
+| tournament_text | 大会名 | VARCHAR | 255 | - | 〇 | - | ○○大会などの名称 |
+| tournament_start_date | 大会開始日 | DATE | 3 | - | 〇 | - | 開催開始日 |
+| tournament_end_date | 大会終了日 | DATE | 3 | - | 〇 | - | 終了日 |
+| tournament_parent_id | 親大会ID | INT | 4 | - | - | 0 | 連携する親大会のID |
+| tournament1_teams | 1部参加チーム数 | INT | 4 | - | 〇 | 0 | 1回戦等の参加数 |
+| tournament1_text | 1部説明 | VARCHAR | 255 | - | - | '' | 1部の説明文 |
+| tournament2_teams | 2部参加チーム数 | INT | 4 | - | 〇 | 0 | 2部の参加数 |
+| tournament2_text | 2部説明 | VARCHAR | 255 | - | - | '' | 2部の説明文 |
+| tournament3_teams | 3部参加チーム数 | INT | 4 | - | 〇 | 0 | 3部の参加数 |
+| tournament3_text | 3部説明 | VARCHAR | 255 | - | - | '' | 3部の説明文 |
+| tournament_attachment_id | 添付ファイルID | INT | 4 | - | - | 0 | ルール/申込書等の添付データID |
+| is_enabled | 有効フラグ | INT | 4 | - | 〇 | 0 | レコードの有効性( 0: 無効, 1: 有効 ) |
+| created_at | 作成日時 | DATETIME | 8 | - | 〇 | CURRENT_TIMESTAMP | 作成日時 |
+| created_by | 作成者 | VARCHAR | 255 | - | - | - | 作成したユーザー(プログラム) |
+| updated_at | 更新日時 | DATETIME | 8 | - | 〇 | CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | 更新日時 |
+| updated_by | 更新者 | VARCHAR | 255 | - | - | - | 更新したユーザー(プログラム) |
 
+#### 1.2.5. baseball_user ( ユーザーテーブル )
 
-#### 1.2.4. baseball_user ( ユーザーテーブル )
 | カラム名 | 項目名 | 型  | 長さ | キー | 必須 | 初期値 | 説明 |
 | :------ | :----- | :-- | --: | :--: | :--: | :---  | :-- |
-| user_id | ユーザーID          | INT | 4 | PK | 〇 | AUTO_INCREMENT | 一意のID                |
-| user_cd | ユーザーCD | VARCHAR | 255 | UK | 〇 | | サインインに利用するコード |
-| password | パスワード | VARCHAR | 255 | - | 〇 |                | パスワード（ハッシュ化）  |
-| username  | ユーザー名称 | VARCHAR | 255 | - | 〇 |                | ユーザーの表示名称  |
-| email  | メールアドレス | VARCHAR | 255 | - | 〇 |                | ユーザーのメールアドレス（認証コード送付などに利用）  |
-| role_id | 権限ID     | INT | 4 | - | 〇 | 1 : 登録済み              | 権限テーブルのID |
-| verification_cd  | 認証コード | VARCHAR | 255 | - | 〇 | '' : 空文字             | 認証コード  |
-| verification_period  | 認証有効期限 | INT | 4 | - | 〇 | 0                | 認証コードの有効期限  |
-| signin_at | サインイン日時 | DATETIME | 8   | - | - | - | サインインした日時 |
-| signin_by | サインイン者   | VARCHAR  | 255 | - | - | - | サインインしたユーザー(プログラム) |
-| is_enabled | 有効フラグ | INT      | 4   | - | 〇 | 0 | レコードの有効性( 0: 無効, 1: 有効 ) |
-| created_at | 作成日時   | DATETIME | 8   | - | 〇 | CURRENT_TIMESTAMP | データを作成した日時 |
-| created_by | 作成者     | VARCHAR  | 255 | - | -  | - | データを作成したユーザー(プログラム) |
-| updated_at | 更新日時   | DATETIME | 8   | - | 〇 | CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | データを更新した日時 |
-| updated_by | 更新者     | VARCHAR  | 255 | - | -  | - | データを更新したユーザー(プログラム) |
+| user_id | ユーザーID | INT | 4 | PK | 〇 | AUTO_INCREMENT | 一意のID |
+| user_cd | ユーザーCD | VARCHAR | 255 | UK | 〇 | - | サインインに利用するコード |
+| password | パスワード | VARCHAR | 255 | - | 〇 | - | パスワード（ハッシュ化） |
+| username | ユーザー名称 | VARCHAR | 255 | - | 〇 | - | ユーザーの表示名称 |
+| email | メールアドレス | VARCHAR | 255 | - | 〇 | - | 認証コード送信先 |
+| role_level | 権限レベル | INT | 4 | - | 〇 | 0 | 0: 一般, 1: 登録済み, 10: 監督, 100: 本部, 1000: システム管理者 |
+| verification_cd | 認証コード | VARCHAR | 255 | - | 〇 | '' | 認証コード |
+| verification_period | 認証有効期限 | INT | 4 | - | 〇 | 0 | 認証コードの有効期限 |
+| signin_at | サインイン日時 | DATETIME | 8 | - | - | - | 最終サインイン日時 |
+| signin_by | サインイン者 | VARCHAR | 255 | - | - | - | サインインしたユーザー(プログラム) |
+| is_enabled | 有効フラグ | INT | 4 | - | 〇 | 0 | レコードの有効性( 0: 無効, 1: 有効 ) |
+| created_at | 作成日時 | DATETIME | 8 | - | 〇 | CURRENT_TIMESTAMP | データを作成した日時 |
+| created_by | 作成者 | VARCHAR | 255 | - | - | - | データを作成したユーザー(プログラム) |
+| updated_at | 更新日時 | DATETIME | 8 | - | 〇 | CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | データを更新した日時 |
+| updated_by | 更新者 | VARCHAR | 255 | - | - | - | データを更新したユーザー(プログラム) |
 
-#### 1.2.5. user_logs（ 操作履歴 ）
+#### 1.2.6. 運用ログ（Log/ 配下のファイル出力）
 
-| カラム名  |項目名| 型 | キー | 必須 | 初期値 |  説明     |
-| :-------- | :------------------ | :-------: | :--: | :--: | :-- | :-- |
-| logged_at | ログ作成日時 | TEXT | - | 〇 | datetime( 'now', 'localtime' ) | ログを作成した日時                  |
-| log_level | ログレベル | TEXT | - | 〇 | "INFO" | DEBUG: デバッグログ, INFO: 情報ログ, WARNING: 警告ログ, ERROR: エラーログ, CRITICAL: クリティカルログ |
-| message_cd | メッセージコード |  TEXT | - | - | - | メッセージコード |
-| message | メッセージ |  TEXT | - | - | - | メッセージ |
-| user_id    | ユーザーID | INTEGER | FK | - | - | 操作したユーザーID                       |
-| request_method | リクエスト方法 | TEXT | - | - | - | レクエストされた方法( GET, POSTなど ) |
-| script_name | スクリプト名 | TEXT | - | - | - | スクリプトの名称 |
-| class_name | クラス名 |  TEXT | - | - | - | クラスの名称 |
-| function_name | 関数名 |  TEXT | - | - | - | 関数の名称 |
+現行実装では、`user_logs` のような専用DBテーブルは定義されていない。ログは `Log/` 配下にファイル出力され、`Class_Log.php` から `notice`, `warning`, `error`, `debug` が利用される。
 
-#### 1.2.6. teams
+| 項目 | 内容 |
+| :--- | :--- |
+| 出力先 | `Log/baseball.log` など |
+| ログレベル | 0,1,2,4,8 の段階 |
+| 主な利用 | 認証失敗、入力異常、DB接続エラー、処理トレース |
+| 実装方式 | `Class_Log` による標準出力＋ファイル書き込み |
+
+> `user_logs` については、設計書上の補足としては運用ログ想定のモデルであり、現行SQL定義の中では実装されていない。
+
+#### 1.2.7. teams
 
 | カラム名  | 型                  | 説明     |
 | :-------- | :------------------ | :------- |
@@ -273,7 +285,9 @@ erDiagram
 | team_name | TEXT                | チーム名 |
 | entry_number     | INTEGER             | エントリーナンバー |
 
-#### 1.2.7. players
+> 以下の `teams` / `players` / `games` / `game_scores` / `player_stats` 系は、設計書上の概念モデルとして記載されている。一方、現行のインストール SQL では `baseball_team`, `baseball_game`, `baseball_tournament`, `baseball_user`, `baseball_information` が実体として定義されているため、実装記述は現行定義を優先する。
+
+#### 1.2.8. players
 
 | カラム名    | 型                  | 説明         |
 | :---------- | :------------------ | :----------- |
@@ -283,7 +297,7 @@ erDiagram
 | position    | TEXT                | ポジション   |
 | uniform_number | INTEGER           | 背番号       |
 
-#### 1.2.8. games
+#### 1.2.9. games
 | カラム名  | 型                  | 説明                     |
 | --------- | ------------------- | ------------------------ |
 | game_id   | INTEGER PRIMARY KEY | 試合ID                   |
@@ -297,7 +311,7 @@ erDiagram
 | status           | TEXT                | 試合ステータス（自主対戦/本部管理） |
 
 
-#### 1.2.9. game_scores
+#### 1.2.10. game_scores
 | カラム名    | 型                  | 説明               |
 | ----------- | ------------------- | ------------------ |
 | score_id    | INTEGER PRIMARY KEY | スコアID           |
@@ -308,7 +322,7 @@ erDiagram
 | winner_team_id | INTEGER           | 勝者チームID（抽選勝敗対応） |
 
 
-#### 1.2.10. player_stats
+#### 1.2.11. player_stats
 | カラム名           | 型                  | 説明                                                                                                         |
 | ------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------ |
 | id                 | INTEGER PRIMARY KEY | 成績ID                                                                                                       |
@@ -356,7 +370,7 @@ erDiagram
 | wild_pitches       | INTEGER             | 投手：暴投 Wild PitchWP 投手のミスによる進塁。捕手の責任ではない。                                           |
 | balks              | INTEGER             | ボーク BalkBK 投手の反則行為による進塁。ルール違反として記録。                                               |
 
-#### 1.2.11. batteries
+#### 1.2.12. batteries
 | カラム名   | 型                  | 説明               |
 | ---------- | ------------------- | ------------------ |
 | id         | INTEGER PRIMARY KEY | バッテリーID       |
@@ -364,7 +378,7 @@ erDiagram
 | pitcher_id | INTEGER             | 投手ID（外部キー） |
 | catcher_id | INTEGER             | 捕手ID（外部キー） |
 
-#### 1.2.12. starting_members
+#### 1.2.13. starting_members
 | カラム名       | 型                  | 説明                     |
 | -------------- | ------------------- | ------------------------ |
 | id             | INTEGER PRIMARY KEY | スターティングメンバーID |
@@ -375,7 +389,7 @@ erDiagram
 | uniform_number | INTEGER             | 背番号                   |
 | batting_hand   | TEXT                | 投/打（例：右投/左打）   |
 
-#### 1.2.13. reserve_members
+#### 1.2.14. reserve_members
 | カラム名       | 型                  | 説明               |
 | -------------- | ------------------- | ------------------ |
 | id             | INTEGER PRIMARY KEY | リザーブメンバーID |
@@ -1060,7 +1074,7 @@ return [
 - トーナメント表の勝ち上がりを視覚的に強調（太字・色字等）する機能を追加
 - 裏トーナメント（敗者復活戦）への自動転記機能を追加
 - 表・裏トーナメントの全国大会出場権の違いを説明
-- トーナメント表の「大やま」「小やま」ごとの転記先ロジックの設計を追加（詳細は後日口頭説明）
+- トーナメント表の「大やま」「小やま」ごとの転記先ロジックは、運用ルールに応じて現行実装とは分離して補足する
 - 準々決勝～決勝は本部管理となり、該当チームはサイトアクセス不可（PW無効化）仕様を追加
 - 1回戦～3回戦は「自主対戦制」とし、監督が日時・場所を入力できる機能を追加
 - 試合結果入力時、引き分けや不戦勝の特別処理（抽選勝敗、スコア記録方法）を追加
