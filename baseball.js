@@ -184,7 +184,7 @@ document.addEventListener( 'click', function( event ) {
 		return;
 	}
 
-	var dialog = document.getElementById( 'roleDialog' );
+	var dialog = button.closest( 'dialog' );
 	if ( dialog ) {
 		if ( typeof dialog.close === 'function' ) {
 			dialog.close();
@@ -246,6 +246,201 @@ document.addEventListener( 'submit', function( event ) {
 
 document.addEventListener( 'click', function( event ) {
 	var dialog = document.getElementById( 'roleDialog' );
+	if ( !dialog || event.target !== dialog ) {
+		return;
+	}
+	if ( typeof dialog.close === 'function' ) {
+		dialog.close();
+	} else {
+		dialog.removeAttribute( 'open' );
+	}
+} );
+
+// メニュー管理画面
+function resetMenuFormState() {
+	var menuList = document.getElementById( 'menu-list' );
+	if ( !menuList ) {
+		return;
+	}
+
+	var form = menuList.querySelector( '#menuForm' );
+	if ( !form ) {
+		return;
+	}
+
+	form.dataset.locked = '0';
+	form.classList.remove( 'is-submitting' );
+
+	var saveButton = form.querySelector( '#menu_save_button' );
+	if ( saveButton ) {
+		saveButton.disabled = false;
+		saveButton.textContent = '登録';
+	}
+
+	form.querySelectorAll( 'input, button, select' ).forEach( function( element ) {
+		element.disabled = false;
+	} );
+
+	var dialog = document.getElementById( 'menuDialog' );
+	if ( dialog ) {
+		dialog.classList.remove( 'is-processing' );
+	}
+}
+
+function openMenuDialog( mode, row ) {
+	var menuList = document.getElementById( 'menu-list' );
+	var dialog = document.getElementById( 'menuDialog' );
+	if ( !menuList || !dialog ) {
+		return;
+	}
+
+	resetMenuFormState();
+
+	var action = menuList.querySelector( '#menu_action' );
+	var targetMenuId = menuList.querySelector( '#target_menu_id' );
+	var menuId = menuList.querySelector( '#menu_id' );
+	var parentId = menuList.querySelector( '#menu_parent_id' );
+	var displayOrder = menuList.querySelector( '#menu_display_order' );
+	var roleMin = menuList.querySelector( '#menu_role_min' );
+	var roleMax = menuList.querySelector( '#menu_role_max' );
+	var menuName = menuList.querySelector( '#menu_name' );
+	var menuUrl = menuList.querySelector( '#menu_url' );
+	var isEnabled = menuList.querySelector( '#menu_is_enabled' );
+	var saveButton = menuList.querySelector( '#menu_save_button' );
+	var title = menuList.querySelector( '#menuDialogTitle' );
+
+	if ( !action || !targetMenuId || !menuId || !parentId || !displayOrder || !roleMin || !roleMax || !menuName || !menuUrl || !isEnabled || !saveButton || !title ) {
+		console.error( 'menu-list: form elements not found' );
+		return;
+	}
+
+	if ( mode === 'update' && row ) {
+		action.value = 'update';
+		// target_menu_idは更新対象、menu_idは変更後IDとして送る。
+		targetMenuId.value = row.dataset.menuId || '';
+		menuId.value = row.dataset.menuId || '';
+		menuId.readOnly = false;
+		parentId.value = row.dataset.parentId || '0';
+		displayOrder.value = row.dataset.displayOrder || '0';
+		roleMin.value = row.dataset.roleMin || '0';
+		roleMax.value = row.dataset.roleMax || '0';
+		menuName.value = row.dataset.menuName || '';
+		menuUrl.value = row.dataset.menuUrl || '';
+		isEnabled.checked = row.dataset.isEnabled === '1';
+		saveButton.textContent = '更新';
+		title.textContent = 'メニュー編集';
+		menuName.focus();
+	} else {
+		action.value = 'add';
+		// 新規時はtarget_menu_idを空にして重複チェック対象を明確化する。
+		targetMenuId.value = '';
+		menuId.value = '';
+		menuId.readOnly = false;
+		parentId.value = '0';
+		displayOrder.value = '0';
+		roleMin.value = '0';
+		roleMax.value = '9999';
+		menuName.value = '';
+		menuUrl.value = '';
+		isEnabled.checked = true;
+		saveButton.textContent = '登録';
+		title.textContent = 'メニュー登録';
+		menuId.focus();
+	}
+
+	if ( typeof dialog.showModal === 'function' ) {
+		dialog.showModal();
+	} else {
+		dialog.setAttribute( 'open', 'open' );
+	}
+}
+
+document.addEventListener( 'click', function( event ) {
+	var button = event.target.closest( '#new_menu_button' );
+	if ( button ) {
+		openMenuDialog( 'add', null );
+		return;
+	}
+
+	button = event.target.closest( '#menu-list .edit-button' );
+	if ( !button ) {
+		return;
+	}
+
+	var row = button.closest( 'tr' );
+	if ( row ) {
+		openMenuDialog( 'update', row );
+	}
+} );
+
+document.addEventListener( 'click', function( event ) {
+	var button = event.target.closest( '#menu-list #menu_cancel_button' );
+	if ( !button ) {
+		return;
+	}
+
+	var dialog = document.getElementById( 'menuDialog' );
+	if ( dialog ) {
+		if ( typeof dialog.close === 'function' ) {
+			dialog.close();
+		} else {
+			dialog.removeAttribute( 'open' );
+		}
+	}
+} );
+
+function lockMenuForm( form, event ) {
+	if ( !form ) {
+		return false;
+	}
+
+	if ( form.dataset.locked === '1' ) {
+		if ( event ) {
+			event.preventDefault();
+		}
+		return false;
+	}
+
+	form.dataset.locked = '1';
+	form.classList.add( 'is-submitting' );
+
+	var saveButton = form.querySelector( '#menu_save_button' );
+	if ( saveButton ) {
+		saveButton.disabled = true;
+		saveButton.textContent = '処理中...';
+	}
+
+	var dialog = document.getElementById( 'menuDialog' );
+	if ( dialog ) {
+		dialog.classList.add( 'is-processing' );
+	}
+
+	return true;
+}
+
+document.addEventListener( 'submit', function( event ) {
+	var form = event.target.closest( '#menuForm' );
+	if ( !form ) {
+		return;
+	}
+
+	if ( !lockMenuForm( form, event ) ) {
+		event.preventDefault();
+		return;
+	}
+
+	var dialog = document.getElementById( 'menuDialog' );
+	if ( dialog ) {
+		if ( typeof dialog.close === 'function' ) {
+			dialog.close();
+		} else {
+			dialog.removeAttribute( 'open' );
+		}
+	}
+} );
+
+document.addEventListener( 'click', function( event ) {
+	var dialog = document.getElementById( 'menuDialog' );
 	if ( !dialog || event.target !== dialog ) {
 		return;
 	}

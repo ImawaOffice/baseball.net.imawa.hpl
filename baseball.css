@@ -408,22 +408,26 @@ main.page-main h2 {
 		height: 20px;
 	}
 
-	#roleTable {
+	#roleTable,
+	#menuTable {
 		display: block;
 		width: 100%;
 		border: none;
 	}
 
-	#roleTable thead {
+	#roleTable thead,
+	#menuTable thead {
 		display: none;
 	}
 
-	#roleTable tbody {
+	#roleTable tbody,
+	#menuTable tbody {
 		display: block;
 		width: 100%;
 	}
 
-	#roleTable tr {
+	#roleTable tr,
+	#menuTable tr {
 		display: block;
 		width: 100%;
 		margin-bottom: 14px;
@@ -434,7 +438,8 @@ main.page-main h2 {
 		box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 	}
 
-	#roleTable td {
+	#roleTable td,
+	#menuTable td {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -447,11 +452,13 @@ main.page-main h2 {
 		text-align: left;
 	}
 
-	#roleTable td:last-child {
+	#roleTable td:last-child,
+	#menuTable td:last-child {
 		border-bottom: none;
 	}
 
-	#roleTable td::before {
+	#roleTable td::before,
+	#menuTable td::before {
 		content: attr( data-label );
 		font-weight: 700;
 		color: #4b5563;
@@ -459,7 +466,8 @@ main.page-main h2 {
 		flex-shrink: 0;
 	}
 
-	#roleTable td button {
+	#roleTable td button,
+	#menuTable td button {
 		margin-left: auto;
 		min-width: 92px;
 		min-height: 44px;
@@ -878,6 +886,8 @@ dd.information-title {
 .modal-form .form-group input[ type="email" ],
 .modal-form .form-group input[ type="tel" ],
 .modal-form .form-group input[ type="password" ],
+/* 親メニューID・権限選択のselectも入力項目と同幅にする。 */
+.modal-form .form-group select,
 .modal-form .form-group textarea {
 	width: 100%;
 }
@@ -974,6 +984,7 @@ dd.information-title {
 	}
 
 	#roleTable td button,
+	#menuTable td button,
 	.edit-button {
 		min-width: 92px;
 		min-height: 44px;
